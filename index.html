@@ -1,1357 +1,608 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>مغامرة جزيرة الرقاقة — الإدارة الهندسية</title>
-<style>:root{
-  --bg:#1a1c2c; --purple:#5d275d; --red:#b13e53; --orange:#ef7d57; --yellow:#ffcd75; --lime:#a7f070;
-  --green:#38b764; --teal:#257179; --navy:#29366f; --blue:#3b5dc9; --sky:#41a6f6; --cyan:#73eff7;
-  --white:#f4f4f4; --silver:#94b0c2; --slate:#566c86; --dark:#333c57;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--white);
-  font-family:Tahoma,"Segoe UI","Noto Sans Arabic","Noto Naskh Arabic",system-ui,sans-serif;font-size:16px;line-height:1.7}
-body{background-image:
-  radial-gradient(var(--dark) 1px,transparent 1px),radial-gradient(var(--dark) 1px,transparent 1px);
-  background-size:32px 32px,32px 32px;background-position:0 0,16px 16px}
-button{font-family:inherit}
-img.px,canvas.px{image-rendering:pixelated;image-rendering:crisp-edges}
-.en{direction:ltr;unicode-bidi:isolate;font-family:"Courier New",ui-monospace,monospace;font-style:normal;color:var(--cyan);font-weight:700;font-size:.92em}
-#app{max-width:780px;margin:0 auto;padding:10px 12px 40px;min-height:100vh}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pro VS MASTER?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            background-color: #0d0d0d;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            overflow: hidden; /* Prevent scrolling on mobile */
+            touch-action: none; /* Prevent browser gestures */
+            margin: 0;
+            padding: 0;
+        }
 
-/* HUD */
-#hud{display:flex;align-items:center;gap:10px;background:var(--dark);padding:8px 12px;margin:6px 4px 14px;position:sticky;top:4px;z-index:20;
-  box-shadow:-4px 0 0 0 var(--silver),4px 0 0 0 var(--silver),0 -4px 0 0 var(--silver),0 4px 0 0 var(--silver),0 8px 0 0 rgba(0,0,0,.4)}
-#hud.hide{display:none}
-#hud .me{display:flex;flex-direction:column;flex:1;min-width:0}
-#hud .nm{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#hud .rk{font-size:12px;color:var(--yellow)}
-.bar{height:10px;background:var(--bg);margin-top:3px;position:relative;box-shadow:0 0 0 2px var(--slate)}
-.bar>i{display:block;height:100%;background:var(--lime);transition:width .4s steps(8)}
-#hud .cn{display:flex;align-items:center;gap:4px;font-weight:700;color:var(--yellow)}
-.ibtn{background:var(--navy);color:#fff;border:0;width:38px;height:38px;font-size:18px;cursor:pointer;
-  box-shadow:-3px 0 0 0 var(--bg),3px 0 0 0 var(--bg),0 -3px 0 0 var(--bg),0 3px 0 0 var(--bg)}
-.ibtn:active{transform:translateY(2px)}
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+        }
 
-/* panels & buttons */
-.panel{position:relative;background:var(--dark);padding:14px 16px;margin:10px 4px;
-  box-shadow:-4px 0 0 0 var(--silver),4px 0 0 0 var(--silver),0 -4px 0 0 var(--silver),0 4px 0 0 var(--silver),0 8px 0 0 rgba(0,0,0,.4)}
-.panel.dark{background:var(--bg);box-shadow:-4px 0 0 0 var(--slate),4px 0 0 0 var(--slate),0 -4px 0 0 var(--slate),0 4px 0 0 var(--slate)}
-.btn{font-weight:700;font-size:16px;background:var(--blue);color:#fff;border:0;padding:10px 18px;margin:8px 6px;cursor:pointer;min-height:44px;
-  box-shadow:-4px 0 0 0 var(--bg),4px 0 0 0 var(--bg),0 -4px 0 0 var(--bg),0 4px 0 0 var(--bg),inset 0 -6px 0 0 rgba(0,0,0,.3),inset 0 4px 0 0 rgba(255,255,255,.25)}
-.btn:active{transform:translateY(3px)}
-.btn.ok{background:var(--green)} .btn.warn{background:var(--orange);color:var(--bg)} .btn.ghost{background:var(--slate)}
-.btn.gold{background:var(--yellow);color:var(--bg)}
-.btn[disabled]{opacity:.45;pointer-events:none}
-.btn.sm{padding:6px 12px;min-height:36px;font-size:14px}
-.row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px}
-h1,h2,h3{margin:.2em 0;line-height:1.4}
-h2{font-size:21px;color:var(--yellow)} h3{font-size:17px;color:var(--cyan)}
-.muted{color:var(--silver);font-size:14px}
-.center{text-align:center}
+        #canvas-wrapper {
+            position: relative;
+            background-color: #1A1A1A;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            overflow: hidden;
+        }
 
-/* title */
-.title{text-align:center;padding-top:10px}
-.logo{font-size:34px;font-weight:900;color:var(--yellow);line-height:1.2;
-  text-shadow:3px 3px 0 var(--red),6px 6px 0 var(--purple)}
-.logo small{display:block;font-size:15px;color:var(--cyan);text-shadow:none;margin-top:10px;letter-spacing:1px}
-.heroes{display:flex;justify-content:center;gap:12px;margin:12px 0}
-.heroes button{background:var(--navy);border:0;padding:8px;cursor:pointer;
-  box-shadow:-3px 0 0 0 var(--bg),3px 0 0 0 var(--bg),0 -3px 0 0 var(--bg),0 3px 0 0 var(--bg)}
-.heroes button.sel{background:var(--yellow);animation:bob .6s steps(2) infinite}
-input[type=text]{font:inherit;font-size:18px;text-align:center;width:min(300px,90%);padding:10px;color:var(--white);background:var(--bg);border:0;
-  box-shadow:-3px 0 0 0 var(--silver),3px 0 0 0 var(--silver),0 -3px 0 0 var(--silver),0 3px 0 0 var(--silver)}
+        canvas {
+            display: block;
+        }
 
-/* map */
-.map-wrap{position:relative;margin:6px 6px 0;box-shadow:-4px 0 0 0 var(--silver),4px 0 0 0 var(--silver),0 -4px 0 0 var(--silver),0 4px 0 0 var(--silver),0 8px 0 0 rgba(0,0,0,.4)}
-.map-wrap canvas{display:block;width:100%;height:auto;aspect-ratio:8/5}
-.node{position:absolute;transform:translate(-50%,-50%);width:15%;height:24%;background:transparent;border:0;cursor:pointer;padding:0}
-.node .nm{display:none}
-.node .lb{position:absolute;left:50%;top:92%;transform:translateX(-50%);white-space:nowrap;background:var(--bg);color:var(--white);
-  font-size:clamp(9px,2.2vw,12px);padding:1px 6px;line-height:1.5;box-shadow:0 0 0 2px var(--silver)}
-.node.cur .lb{background:var(--yellow);color:var(--bg);box-shadow:0 0 0 2px var(--orange)}
-.node.locked .lb{background:var(--slate);color:var(--silver)}
-.node .st{display:block;color:var(--yellow);font-size:clamp(8px,2vw,11px);letter-spacing:1px;line-height:1.1}
-.node.shake{animation:shake .35s}
-.lvl-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:14px 6px 4px}
-.lvl{font:inherit;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:0;color:var(--white);background:var(--navy);border:0;padding:6px 4px;cursor:pointer;min-height:48px;
-  box-shadow:-3px 0 0 0 var(--bg),3px 0 0 0 var(--bg),0 -3px 0 0 var(--bg),0 3px 0 0 var(--bg),inset 0 -4px 0 0 rgba(0,0,0,.3)}
-.lvl span{color:var(--yellow);font-size:13px;letter-spacing:1px}.lvl.locked{background:var(--slate);color:var(--silver)}
-@media(min-width:640px){.node .nm{display:inline}.lvl-list{grid-template-columns:repeat(4,1fr)}}
-.sheet{animation:pop .25s steps(4)}
+        .d-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 60px);
+            grid-template-rows: repeat(3, 60px);
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-/* stage */
-.crumbs{display:flex;align-items:center;gap:6px;margin:4px;flex-wrap:wrap}
-.pill{padding:2px 10px;font-size:13px;background:var(--bg);color:var(--silver);box-shadow:0 0 0 2px var(--slate)}
-.pill.on{background:var(--yellow);color:var(--bg);box-shadow:0 0 0 2px var(--orange);font-weight:700}
-.pill.done{background:var(--green);color:var(--bg);box-shadow:0 0 0 2px var(--teal)}
-.npc{display:flex;gap:12px;align-items:flex-start}
-.npc>img{flex:none;margin-top:6px;animation:bob .8s steps(2) infinite}
-.bubble{flex:1;min-width:0}
-.lesson-h{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700;color:var(--yellow);margin-bottom:6px}
-.lesson-h .ic{font-size:26px}
-.lesson-b{font-size:16.5px}
-.tip{background:var(--bg);border-right:5px solid var(--yellow);padding:8px 12px;margin:12px 0 4px;color:var(--yellow);font-weight:700}
-.terms{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.term{background:var(--navy);padding:3px 8px;font-size:13px;box-shadow:0 0 0 2px var(--blue)}
-.term b{color:var(--cyan);direction:ltr;unicode-bidi:isolate;font-family:"Courier New",monospace}
-.formula{direction:ltr;text-align:left;unicode-bidi:isolate;white-space:pre-wrap;background:var(--bg);color:var(--lime);font-family:"Courier New",ui-monospace,monospace;
-  padding:8px 10px;margin:8px 0;font-size:14px;line-height:1.6;box-shadow:inset 0 0 0 2px var(--slate);overflow-x:auto}
-.formula b{color:var(--yellow)}
-.tl{display:flex;gap:8px;align-items:baseline;padding:4px 0;border-bottom:2px dotted var(--slate)}
-.tl>span{flex:none;min-width:58px;text-align:center;background:var(--blue);color:#fff;font-family:"Courier New",monospace;font-weight:700;font-size:13px;padding:0 4px}
-.dots{display:flex;gap:6px;justify-content:center;margin:8px 0}
-.dots i{width:10px;height:10px;background:var(--slate);display:block}
-.dots i.on{background:var(--yellow)} .dots i.done{background:var(--green)}
+        .d-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            user-select: none;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .d-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
 
-/* games & quiz */
-.hearts{display:flex;gap:4px;align-items:center}
-.topline{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
-.qtext{font-size:19px;font-weight:700;margin:6px 0 12px}
-.opt{display:flex;gap:10px;align-items:center;width:100%;text-align:right;font:inherit;font-size:16.5px;color:var(--white);background:var(--navy);border:0;padding:10px 12px;margin:8px 0;cursor:pointer;min-height:48px;
-  box-shadow:-4px 0 0 0 var(--bg),4px 0 0 0 var(--bg),0 -4px 0 0 var(--bg),0 4px 0 0 var(--bg),inset 0 -5px 0 0 rgba(0,0,0,.3)}
-.opt .k{flex:none;width:28px;height:28px;background:var(--yellow);color:var(--bg);font-weight:900;display:grid;place-items:center;font-family:"Courier New",monospace}
-.opt:active{transform:translateY(3px)}
-.opt.right{background:var(--green);color:var(--bg);animation:pop .3s steps(3)} .opt.wrong{background:var(--red);animation:shake .35s}
-.opt.gone{opacity:.25;pointer-events:none}
-.opt[disabled]{pointer-events:none}
-.fb{padding:10px 12px;margin-top:10px;background:var(--bg);box-shadow:inset 0 0 0 3px var(--slate)}
-.fb.good{box-shadow:inset 0 0 0 3px var(--green)} .fb.bad{box-shadow:inset 0 0 0 3px var(--orange)}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.chip{display:block;width:100%;font:inherit;font-size:15px;text-align:center;color:var(--white);background:var(--navy);border:0;padding:10px 8px;margin:6px 0;cursor:pointer;min-height:46px;
-  box-shadow:-3px 0 0 0 var(--bg),3px 0 0 0 var(--bg),0 -3px 0 0 var(--bg),0 3px 0 0 var(--bg),inset 0 -4px 0 0 rgba(0,0,0,.3)}
-.chip.sel{background:var(--yellow);color:var(--bg)} .chip.hit{background:var(--green);color:var(--bg);pointer-events:none}
-.chip.bad{animation:shake .35s;background:var(--red)}
-.item-card{font-size:19px;font-weight:700;text-align:center;padding:18px 10px;background:var(--bg);margin:8px 0 14px;box-shadow:inset 0 0 0 3px var(--yellow)}
-.bk{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
-.chain{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-.chain div{background:var(--green);color:var(--bg);padding:6px 10px;font-weight:700;animation:pop .25s steps(3)}
-.missions{list-style:none;margin:10px 0 0;padding:0}
-.missions li{padding:6px 10px;margin:6px 0;background:var(--bg);box-shadow:inset 0 0 0 2px var(--slate);font-size:14.5px}
-.missions li.ok{box-shadow:inset 0 0 0 2px var(--green);color:var(--lime)}
-.missions li:before{content:"⬜ "} .missions li.ok:before{content:"✅ "}
-.ctrl{margin:8px 0}.ctrl label{display:flex;justify-content:space-between;font-size:14px;color:var(--silver)}
-.ctrl label b{color:var(--yellow);font-family:"Courier New",monospace}
-input[type=range]{width:100%;accent-color:var(--yellow);height:28px}
-.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:8px 0}
-.readout div{background:var(--bg);padding:6px 8px;text-align:center;box-shadow:inset 0 0 0 2px var(--slate);font-size:13px;color:var(--silver)}
-.readout b{display:block;font-size:18px;color:var(--lime);font-family:"Courier New",monospace;direction:ltr}
-.readout b.neg{color:var(--orange)} .readout b.y{color:var(--yellow)}
-canvas.chart{width:100%;height:auto;background:var(--bg);display:block;box-shadow:inset 0 0 0 3px var(--slate)}
-table.grid{width:100%;direction:ltr;table-layout:fixed;border-collapse:separate;border-spacing:3px;text-align:center;font-size:13px}
-table.grid th{unicode-bidi:plaintext}
-table.grid th{background:var(--navy);padding:4px;font-weight:700;font-size:12.5px}
-table.grid td{background:var(--bg);padding:2px;position:relative;vertical-align:middle;box-shadow:inset 0 0 0 2px var(--slate)}
-table.grid td .c{position:absolute;top:1px;left:3px;font-size:11px;color:var(--orange);font-family:"Courier New",monospace}
-table.grid td .q{font-size:18px;font-weight:900;color:var(--yellow);font-family:"Courier New",monospace;display:block;margin:6px 0 2px}
-table.grid td .pm{display:flex;gap:2px;justify-content:center}
-table.grid td .pm button{width:24px;height:26px;border:0;background:var(--blue);color:#fff;font-weight:900;cursor:pointer;font-size:16px;padding:0}
-table.grid td.pick{background:var(--green);color:var(--bg);cursor:pointer}
-table.grid td.pick .cc{color:var(--bg)}
-table.grid td.can{cursor:pointer}
-table.grid td.zero{color:var(--lime)}
-.okc{color:var(--lime)} .badc{color:var(--orange)}
-.mat{display:inline-block;margin:6px}.mat table{border-collapse:collapse;font-family:"Courier New",monospace;direction:ltr}
-.mat td,.mat th{border:2px solid var(--slate);padding:2px 7px;font-size:13px;text-align:center}
-.mat td.z{background:var(--green);color:var(--bg);font-weight:900}
-.cert{text-align:center;padding:26px 14px;background:var(--yellow);color:var(--bg);
-  box-shadow:-6px 0 0 0 var(--orange),6px 0 0 0 var(--orange),0 -6px 0 0 var(--orange),0 6px 0 0 var(--orange),0 12px 0 0 rgba(0,0,0,.4)}
-.cert h1{font-size:30px;color:var(--purple)} .cert .nm{font-size:28px;font-weight:900;color:var(--red);margin:8px 0;text-shadow:2px 2px 0 var(--white)}
-.stars{font-size:34px;letter-spacing:6px;color:var(--yellow);text-shadow:3px 3px 0 var(--orange)}
-.gl-item{padding:6px 0;border-bottom:2px dotted var(--slate)} .gl-item .e{display:block}
-.gl-item .a{color:var(--yellow);font-weight:700}
-.search{margin:6px 0 10px;width:100%!important}
-.toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:var(--yellow);color:var(--bg);font-weight:700;padding:8px 16px;z-index:100;
-  box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--orange);animation:float 1.9s steps(12) forwards;max-width:90vw;text-align:center}
-.confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:90;image-rendering:pixelated}
-.overlay{position:fixed;inset:0;background:rgba(26,28,44,.92);z-index:60;overflow:auto;padding:14px}
-.overlay .box{max-width:720px;margin:0 auto}
+        .d-up { grid-column: 2; grid-row: 1; }
+        .d-left { grid-column: 1; grid-row: 2; }
+        .d-right { grid-column: 3; grid-row: 2; }
+        .d-down { grid-column: 2; grid-row: 3; }
 
-@keyframes bob{50%{transform:translateY(-4px)}}
-@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-@keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
-@keyframes float{0%{opacity:0;transform:translate(-50%,10px)}10%{opacity:1;transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-20px)}}
-@media(max-width:480px){.logo{font-size:28px}.lesson-b{font-size:16px}.cols{gap:6px}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
-</style></head>
-<body><div id="app"><div id="hud" class="hide"></div><main id="screen"></main></div>
+        #ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            transition: opacity 0.3s ease;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .neon-text-red { text-shadow: 0 0 10px #FF4444, 0 0 20px #FF4444; color: #FF4444; }
+        .neon-text-blue { text-shadow: 0 0 10px #4444FF, 0 0 20px #4444FF; color: #4444FF; }
+        .neon-text-white { text-shadow: 0 0 10px #FFF, 0 0 20px #FFF; color: #FFF; }
+        
+        button.action-btn {
+            background: linear-gradient(135deg, #FF4444 0%, #4444FF 100%);
+            border: none;
+            padding: 12px 24px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            transition: transform 0.1s;
+        }
+        button.action-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div class="mb-4 text-center">
+        <h1 class="text-3xl font-black tracking-widest"><span class="neon-text-red">Pro</span> <span class="text-gray-400">VS</span> <span class="neon-text-blue">MASTER?</span></h1>
+        <p class="text-xs text-gray-400 mt-1 uppercase tracking-widest">Sync. Survive. Succeed.</p>
+    </div>
+
+    <div id="canvas-wrapper">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- UI Overlay for Menus -->
+        <div id="ui-layer">
+            <h2 id="ui-title" class="text-4xl font-bold mb-2 neon-text-white">START GAME</h2>
+            <p id="ui-subtitle" class="text-sm text-gray-300 mb-6 text-center px-4">Move both spheres to the top.<br>Avoid active rhythm barriers.</p>
+            <button id="start-btn" class="action-btn">PLAY NOW</button>
+        </div>
+    </div>
+
+    <!-- Mobile D-Pad -->
+    <div class="d-pad">
+        <div class="d-btn d-up" id="btn-up">▲</div>
+        <div class="d-btn d-left" id="btn-left">◀</div>
+        <div class="d-btn d-right" id="btn-right">▶</div>
+        <div class="d-btn d-down" id="btn-down">▼</div>
+    </div>
+</div>
+
 <script>
-(function(){'use strict';
-/* ============================================================
-   محتوى اللعبة — كل مرحلة = فصل/جزء من المادة.
-   لإضافة مرحلة جديدة: أضف كائن جديد إلى LEVELS (نفس الشكل) فقط.
-   ============================================================ */
-const E = t => `<i class="en">${t}</i>`;
+/**
+ * Pro VS MASTER? - Core Game Logic
+ */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const uiLayer = document.getElementById('ui-layer');
+const uiTitle = document.getElementById('ui-title');
+const uiSubtitle = document.getElementById('ui-subtitle');
+const startBtn = document.getElementById('start-btn');
 
-const LEVELS = [
-/* ───────────────────────── المرحلة 1 ───────────────────────── */
-{
-  id: 1, ch: 'الفصل الأول', name: 'بوابة المصنع', short: 'مفاهيم الهندسة الصناعية',
-  intro: 'هلا بيك يا مغامر! وصلت لجزيرة الرقاقة 🏝️ بيها مصنع يسوّي أجهزة اتصالات ودوائر PCB. أني بِت، الروبوت الدليل. أول شي لازم نعرف: الهندسة الصناعية شنو ومن وين جات؟',
-  lessons: [
-    { ic: '💡', t: 'الهندسة الصناعية شنو؟',
-      b: `تخيّل عندك ورشة صغيرة تسوّي ألعاب. الهندسة الصناعية هي الشخص الشاطر اللي يخلي الورشة تسوّي <b>ألعاب أكثر، بجودة أحسن، وبخسارة أقل</b>، بدون ما يضيّع مواد ولا وقت ولا تعب عمال.<br><br>
-          <b>التعريف الرسمي:</b> العلوم اللي تنسّق بين ثلاث أشياء: <b>خصائص المواد الخام + طاقة المكائن + جهد العمال</b>، حتى نقلل هدر الموارد ونحسّن إنتاجية العمل.`,
-      tip: 'الثلاثي الذهبي: مواد 🧱 + مكائن ⚙️ + عمال 👷',
-      terms: [['Industrial Enterprise', 'منشأة / مشروع صناعي'], ['Resource Waste', 'هدر الموارد']] },
-    { ic: '🚀', t: 'ليش احتاجوها؟',
-      b: `المكائن صارت <b>أسرع وأدق وأوتوماتيكية</b> (${E('Automation')}). بس مكينة سريعة بدون عمال ماهرين وإدارة شاطرة = سيارة سباق بدون سائق!<br><br>
-          فلازم تتطور معاها: <b>طرق التصنيع + مهارات العمال + أنظمة الإدارة</b>، حتى نستغل كل طاقة المكينة، نزيد الإنتاج، نحسّن الجودة ونقلل الكلفة.<br>
-          والهندسة الصناعية تستخدم <b>أساليب كمية (أرقام)</b> حتى ما نضيّع طاقة ولا مواد ولا عمالة.`,
-      terms: [['Automation Level', 'مستوى الأتمتة (الآلية)'], ['Manufacturing Costs', 'تكاليف التصنيع']] },
-    { ic: '🏚️', t: 'القصة — المرحلة 1: قبل الثورة الصناعية',
-      b: `الإنتاج <b>يدوي</b> بورش صغيرة وبيوت.<br>
-          • ما كانت كو منافسة، لأن الإنتاج قليل والطلب قليل (مستوى المعيشة واطئ).<br>
-          • صاحب المصنع يدير ويسعّر <b>بالتجربة والخطأ</b> بدون نظام علمي.`,
-      tip: 'قبل الثورة = يدوي + بدون منافسة + تجربة وخطأ',
-      terms: [['Trial-and-Error Approach', 'أسلوب التجربة والخطأ'], ['Living Standards', 'مستويات المعيشة']] },
-    { ic: '🏭', t: 'المرحلة 2: الثورة الصناعية (1775)',
-      b: `بدأت بمحرك <b>جيمس واط البخاري سنة 1775</b>. المكائن نقلت الشغل من البيوت للمصانع، وظهرت مشاكل، وكل مشكلة ولّدت حل:<br><br>
-          ⚙️ المكينة تنتج أكثر بدون جهد زايد من العامل ← <b>خلافات أجور</b> ← ظهرت <b>دراسة العمل</b> (${E('Work Study')}) لتحديد وقت قياسي وحوافز.<br>
-          🚑 حوادث أكثر ← <b>تدريب مهني + قواعد سلامة + تعويضات</b>.<br>
-          🏗️ مصانع أكبر ← <b>دراسات جدوى + هيكل تنظيمي + تخطيط ورقابة</b>.<br>
-          🥊 منافسة شديدة ← <b>محاسبة كلفة، قياس إنتاجية، رقابة خزين، مناولة مواد، ضبط جودة</b>.`,
-      terms: [['Work Study', 'دراسة العمل (الحركة والزمن)'], ['Industrial Safety', 'الأمان الصناعي'], ['Cost Accounting', 'محاسبة التكاليف']] },
-    { ic: '👨‍🔬', t: 'العلماء — الجزء 1 (1776 → 1916)',
-      b: `<div class="tl"><span>1776</span><b>آدم سميث</b> — <i class="en">Division of Labor</i> تقسيم العمل</div>
-          <div class="tl"><span>1832</span><b>باباج</b> — <i class="en">Skill Specialization</i> ربط الأجر بمستوى المهارة</div>
-          <div class="tl"><span>1886</span><b>هنري تاون</b> — تحليل البيانات الإحصائية (بداية الإدارة العلمية)</div>
-          <div class="tl"><span>1911</span><b>تايلر</b> — «مبادئ الإدارة العلمية» + مكافأة وعقوبة</div>
-          <div class="tl"><span>1913</span><b>غانت</b> — <i class="en">Gantt Chart</i> لتخطيط الإنتاج ومتابعته</div>
-          <div class="tl"><span>1916</span><b>فايول</b> — 5 وظائف: تخطيط، تنظيم، توجيه، تنسيق، رقابة</div>`,
-      tip: 'سميث يقسّم 🍰، باباج يدفع حسب المهارة 💰، تايلر يكافئ 🎁، غانت يرسم جدول 📅، فايول 5 وظائف ✋',
-      terms: [['Division of Labor', 'تقسيم العمل'], ['Scientific Management', 'الإدارة العلمية']] },
-    { ic: '🔬', t: 'العلماء — الجزء 2 (1922 → 1945)',
-      b: `<div class="tl"><span>1922</span><b>جلبرث</b> — صوّر العمل بالكاميرا وقسّمه إلى <b>17 حركة أساسية</b> (${E('Therbligs')})</div>
-          <div class="tl"><span>1923</span><b>شيلدون</b> — تنمية العاملين بالتدريب المستمر</div>
-          <div class="tl"><span>1935</span><b>هوبف</b> — النماذج الرياضية ← <i class="en">Optimization Science</i> علم الأمثلية</div>
-          <div class="tl"><span>—</span><b>مايو، فوليت، ماسلو</b> — العلاقات الإنسانية والقيادة وهرم الحاجات</div>
-          <div class="tl"><span>1939–45</span><b>فرق بحوث العمليات</b> — ظهرت بالحرب العالمية الثانية لرفع إنتاج الصناعات العسكرية</div>`,
-      tip: 'جلبرث = 17 حركة 🎥 | ماسلو = هرم الحاجات 🔺',
-      terms: [['Fundamental Motions (Therbligs)', 'الحركات الأساسية للعمل'], ['Hierarchy of Needs', 'هرم الحاجات'], ['Human Relations', 'العلاقات الإنسانية']] },
-    { ic: '💻', t: 'المرحلة 3: بعد 1945 — الثورة التكنولوجية',
-      b: `بحوث العمليات (${E('OR')}) طلعت من الجيش ودخلت المصانع والخدمات، وساعدها اختراع <b>الحاسوب</b>. أدواتها بكلمات بسيطة:<br><br>
-          • <b>Linear Programming</b>: وزّع مواردك بأحسن شكل.<br>
-          • <b>Dynamic Programming</b>: قرارات متتالية متداخلة.<br>
-          • <b>Sequencing</b>: أفضل ترتيب للشغلات.<br>
-          • <b>Decision / Game / Queuing Theory</b>: قرارات، منافسين، طوابير.<br>
-          • <b>PERT/CPM</b>: تخطيط المشاريع الكبيرة والمسار الحرج.<br>
-          • <b>Input-Output, Markov, Benefit-Cost</b>: تحليلات.<br>
-          • نماذج: <b>Transportation, Inventory, Replacement</b> (نقل، خزين، استبدال المكائن).`,
-      terms: [['Operations Research (OR)', 'بحوث العمليات'], ['Queuing Theory', 'نظرية صفوف الانتظار'], ['Network Analysis (PERT/CPM)', 'تحليل المخططات الشبكية'], ['Replacement Models', 'نماذج الإحلال والاستبدال']] },
-    { ic: '🎯', t: 'صفات الهندسة الحديثة وأهدافها',
-      b: `<b>4 صفات للهندسة الصناعية الحديثة:</b><br>
-          1️⃣ <b>Specialization</b> التخصص: المصنع على منتج واحد أو منتجات متشابهة.<br>
-          2️⃣ <b>Automation</b> الأتمتة: مكائن تقلل الجهد وتزيد الدقة وتوفر المواد.<br>
-          3️⃣ <b>Scientific Approach</b>: أسلوب علمي وبحوث عمليات.<br>
-          4️⃣ <b>Systems Perspective</b>: تحليل النظم لتحسين المدخلات الثلاث (مواد، مكائن، عمل).<br><br>
-          <b>3 أهداف للمنشأة الصناعية:</b> إنتاج <b>الكمية المطلوبة</b> ← بـ<b>الجودة المحددة</b> ← وبـ<b>أقل كلفة</b>.`,
-      tip: 'الأهداف: كمية – جودة – كلفة',
-      terms: [['Systems Perspective', 'منظور النظم'], ['Competitive Advantage', 'الميزة التنافسية']] }
-  ],
-  train: [{
-    type: 'match', title: 'طابق العالم مع إنجازه',
-    desc: 'اضغط على اسم العالم من اليمين، بعدين على إنجازه من اليسار.',
-    pairs: [['آدم سميث', 'تقسيم العمل'], ['باباج', 'ربط الأجر بالمهارة'], ['تايلر', 'الإدارة العلمية + حوافز'], ['غانت', 'مخطط تخطيط الإنتاج'], ['فايول', '5 وظائف إدارية'], ['جلبرث', '17 حركة أساسية']]
-  }],
-  quiz: [
-    { q: 'شنو هي الأهداف الأساسية للمنشأة الصناعية؟', o: ['أكبر عدد عمال ممكن', 'الكمية المطلوبة + الجودة المحددة + أقل كلفة', 'أعلى سعر بيع فقط', 'أكبر مساحة أرض'], a: 1, e: 'الأهداف الثلاثة: إنتاج الكمية المطلوبة، بمواصفات جودة محددة، وبأقل كلفة ممكنة.' },
-    { q: 'من اللي نادى بمبدأ «تقسيم العمل» سنة 1776؟', o: ['فريدريك تايلر', 'آدم سميث', 'هنري غانت', 'فرانك جلبرث'], a: 1, e: 'آدم سميث (1776) = تقسيم العمل. باباج (1832) = التخصص المهاري.' },
-    { q: 'ليش ظهرت «دراسة العمل» (Work Study) بالثورة الصناعية؟', o: ['بسبب خلافات الأجور لأن المكينة صارت تنتج أكثر بدون جهد زايد', 'بسبب قلة المكائن', 'لأن العمال ما يحتاجون تدريب', 'بسبب انتهاء المنافسة'], a: 0, e: 'زيادة طاقة المكينة رفعت الإنتاج بدون جهد مماثل من العامل، فصار لازم وقت قياسي وحوافز.' },
-    { q: 'جلبرث قسّم عمل العامل إلى كم حركة أساسية (Therbligs)؟', o: ['12', '15', '17', '20'], a: 2, e: 'جلبرث (1922) استعمل التصوير وقسّم العمل إلى 17 حركة أساسية.' },
-    { q: 'مخطط غانت (Gantt Chart) يستخدم لـ…', o: ['حساب الأجور', 'تخطيط الإنتاج ومتابعته', 'قياس الجودة', 'تصميم المكائن'], a: 1, e: 'هنري غانت (1913) طوّر المخطط لتخطيط الإنتاج والرقابة عليه.' },
-    { q: 'أي من التالي ليس من وظائف فايول الخمس؟', o: ['التخطيط', 'التنظيم', 'التسويق', 'الرقابة'], a: 2, e: 'وظائف فايول: تخطيط، تنظيم، توجيه، تنسيق، رقابة. التسويق مو منها.' },
-    { q: 'شنو الأسلوب اللي ظهر بالحرب العالمية الثانية لزيادة إنتاجية الصناعات العسكرية؟', o: ['محاسبة التكاليف', 'بحوث العمليات (OR)', 'مخطط غانت', 'هرم ماسلو'], a: 1, e: 'فرق بحوث العمليات (1939–1945) ظهرت أيام الحرب، وبعدها انتقلت للصناعة والخدمات.' },
-    { q: 'قبل الثورة الصناعية، شلون كان صاحب المصنع يدير ويسعّر؟', o: ['بالبرمجة الخطية', 'بالتجربة والخطأ', 'بدراسة الحركة والزمن', 'بنظام الحوافز'], a: 1, e: 'ما كان كو نظام علمي — كان يعتمد على التجربة والخطأ (Trial-and-Error).' },
-    { q: '«منظور النظم» (Systems Perspective) يربط بين…', o: ['الأجور والأسعار والأرباح', 'المواد والمكائن والعمل', 'الإنتاج والتسويق والمبيعات', 'الطلب والعرض والمنافسة'], a: 1, e: 'منظور النظم = النظرة الشاملة اللي تربط (المواد، المكائن، العمل).' }
-  ]
-},
+// Grid configuration
+const GRID_SIZE = 10;
+let cellSize = 0;
+let canvasSize = 0;
 
-/* ───────────────────────── المرحلة 2 ───────────────────────── */
-{
-  id: 2, ch: 'الفصل الثاني — ج1', name: 'مختبر الحسابات', short: 'الجدوى والكلف ونقطة التعادل',
-  intro: 'ممتاز! فتحت البوابة. هنا مختبر الحسابات 🧮 — مكان نقرر بيه: المشروع يستاهل لو لا؟ وشكد لازم ننتج حتى ما نخسر؟ جاهز للأرقام؟',
-  lessons: [
-    { ic: '🔍', t: 'دراسة الجدوى (Feasibility Study)',
-      b: `قبل ما تفتح محل فلافل تسأل: الناس راح تشتري؟ شكد يكلفني؟ أربح لو أخسر؟ هاي <b>دراسة الجدوى</b>: دراسة <b>فنية واقتصادية</b> قبل بدء المشروع حتى ناخذ <b>القرار الصحيح بإنشائه</b>.<br><br>
-          🏛️ <b>القطاع العام:</b> هدفه رفع الدخل القومي ودخل الفرد وتعديل التوازن الاجتماعي.<br>
-          🏪 <b>القطاع الخاص:</b> هدفه أكبر <b>صافي ربح</b>.`,
-      terms: [['Feasibility Studies', 'دراسات الجدوى'], ['Returns on Investment', 'العائد على الاستثمار']] },
-    { ic: '📋', t: 'شنو نحسب بدراسة الجدوى؟',
-      b: `1. الطلب المتوقع والطاقة الإنتاجية<br>2. وصف مراحل الإنتاج<br>3. رأس المال الثابت<br>4. رأس المال التشغيلي<br>5. كلف الإنتاج الكلية<br>6. الربح السنوي<br>7. القيمة المضافة<br>8. الربحية<br>
-          ثم المؤشرات: <b>المبيعات والأرباح، القيمة المضافة، الربحية، نقطة التعادل، حد الأمان، مدة استرداد رأس المال</b>.`,
-      tip: 'ابدأ بالطلب… وانتهِ بالربحية والاسترداد' },
-    { ic: '🏦', t: 'رأس المال: ثابت وتشغيلي',
-      b: `محل فلافل 🧆:<br><br>
-          <b>رأس المال الثابت (Invested / Fixed Capital)</b> = القلاية والمحل والكراسي. يشمل: <b>مكائن ومعدات، قطع غيار، مباني ومرافق</b>.<br><br>
-          <b>رأس المال التشغيلي (Operating / Working Capital)</b> = الحمص والزيت والكهرباء وراتب العامل. يشمل: <b>مواد أولية، أجور العمال، مصاريف صناعية</b> (كهرباء، ماء، وقود).`,
-      terms: [['Production Capacity', 'الطاقة الإنتاجية']] },
-    { ic: '💸', t: 'الكلف: ثابتة ومتغيرة',
-      b: `<div class="formula">Total Cost = Fixed Cost + Variable Cost</div>
-          🧱 <b>ثابتة (Fixed)</b>: ما تتغير بتغير حجم الإنتاج — <b>رواتب إدارية، تأمين، اندثار المكائن، فوائد</b>.<br>
-          🌊 <b>متغيرة (Variable)</b>: تتغير مع الإنتاج — <b>مواد أولية، أجور خط الإنتاج، وقود</b>.<br><br>
-          وبتصنيف ثاني: <b>مباشرة (Direct)</b> مرتبطة بمنتج واحد (مثل المواد المباشرة)، و<b>غير مباشرة (Indirect)</b> مشتركة بين عدة منتجات (مثل أجور الحراس وإيجار المصنع).`,
-      tip: 'ثابتة = تدفعها حتى لو ما أنتجت شي',
-      terms: [['Fixed Costs (FC)', 'الكلف الثابتة'], ['Variable Costs (VC)', 'الكلف المتغيرة'], ['Direct / Indirect Costs', 'كلف مباشرة / غير مباشرة']] },
-    { ic: '🪄', t: 'المعادلات السحرية',
-      b: `<div class="formula">Annual Profit = Total Sales − Total Cost</div>
-          <div class="formula">Gross Value Added = Wages + Depreciation + Interest&amp;Insurance + Profit<br>Net Value Added = Gross VA − Depreciation</div>
-          <div class="formula">Profitability % = Annual Profit ÷ Invested Capital × 100</div>
-          <div class="formula">Break-Even Value = Fixed Costs ÷ (1 − VC ÷ Sales)</div>
-          <div class="formula">Margin of Safety % = (Actual Sales − BEP Value) ÷ Actual Sales × 100</div>
-          <div class="formula">Payback Period = Invested Capital ÷ (Annual Profit + Depreciation)</div>`,
-      tip: 'حفظ: الربحية ÷ رأس المال | الاسترداد = رأس المال ÷ (ربح + اندثار)',
-      terms: [['Payback Period', 'مدة استرداد رأس المال'], ['Margin of Safety', 'حد الأمان'], ['Value Added', 'القيمة المضافة']] },
-    { ic: '🔩', t: 'مثال الكتاب: مصنع أنابيب الفولاذ',
-      b: `مبيعات سنوية = <b>11,250,000</b> (50,000 طن × 225)<br>
-          كلفة الإنتاج = <b>8,839,050</b> (ثابتة 1,759,050 + متغيرة 7,080,000)<br>
-          الربح = 11,250,000 − 8,839,050 = <b>2,410,950</b><br><br>
-          رأس المال المستثمر = <b>8,685,000</b><br>
-          <div class="formula">Profitability = 2,410,950 ÷ 8,685,000 ≈ <b>27.8%</b></div>
-          <div class="formula">Payback = 8,685,000 ÷ (2,410,950 + 697,500) = <b>2.79 ≈ 3 years</b></div>
-          <div class="formula">BEP = 1,759,050 ÷ (1 − 7,080,000 ÷ 11,250,000) ≈ 4,745,638<br>Margin of Safety ≈ 58%</div>
-          <b>القاعدة:</b> المشروع مجدٍ اقتصادياً إذا <b>الربحية > 25%</b> و<b>الاسترداد < 4 سنوات</b> ✅`,
-      tip: 'الشرطين معاً: ربحية فوق 25% + استرداد تحت 4 سنوات' },
-    { ic: '⚖️', t: 'نقطة التعادل (Break-Even Point)',
-      b: `تأجّر كشك عصير بـ 1500 دينار (<b>ثابت</b>)، وكل كوب يكلفك مواد (<b>متغير</b>). إذا بعت قليل تخسر 😢، إذا بعت كثير تربح 😄، وبنقطة معينة <b>لا ربح ولا خسارة</b> = <b>نقطة التعادل</b>: <b>الإيراد الكلي = الكلفة الكلية</b>.<br><br>
-          هي تقاطع خط الكلفة الكلية مع خط الإيراد، وتساعد الإدارة تقرر: زيادة/تقليل الإنتاج، تغيير مزيج المنتجات، تحسين استغلال الطاقة.<br><br>
-          <b>مثال 2:</b> مبيعات 7000 عند طاقة 70%، ثابتة = 1500، متغيرة = 3500 ← التعادل عند <b>طاقة 30%</b> (قيمة 3000)، حد الأمان ≈ <b>57%</b>، والربح عند 90% = 9000 − (1500 + 4500) = <b>3000</b>.`,
-      terms: [['Break-Even Point', 'نقطة التعادل'], ['Capacity Utilization', 'نسبة استغلال الطاقة']] },
-    { ic: '⚠️', t: 'عيوب تحليل التعادل',
-      b: `التحليل أداة قوية للقرارات السريعة، لكن له 3 عيوب:<br><br>
-          1️⃣ يفترض أن الربح <b>خطي (Linear)</b> — وهذا مو دقيق مع المكائن الأوتوماتيكية اللي تخفض كلفة الوحدة.<br>
-          2️⃣ يفترض أن <b>سعر البيع ثابت</b>.<br>
-          3️⃣ لازم <b>يتعدّل باستمرار</b> إذا تغيرت أسعار المواد الأولية أو الأجور.`,
-      tip: 'خطّي • سعر ثابت • يحتاج تحديث' }
-  ],
-  train: [{ type: 'sim', sim: 'bep', title: 'مختبر نقطة التعادل — مصنع PCB' }],
-  quiz: [
-    { q: 'الهدف الرئيسي لدراسة الجدوى هو…', o: ['حساب الأجور', 'اتخاذ القرار المناسب بشأن إنشاء المشروع', 'شراء المكائن', 'تدريب العمال'], a: 1, e: 'دراسة الجدوى تُجرى قبل بدء المشروع حتى نقرر هل ننشئه أو لا.' },
-    { q: 'أي مما يلي يُعد من رأس المال التشغيلي؟', o: ['المباني', 'المكائن', 'المواد الأولية وأجور العمال', 'قطع الغيار'], a: 2, e: 'التشغيلي: مواد أولية + أجور + مصاريف صناعية. الثابت: مكائن، قطع غيار، مباني.' },
-    { q: 'الكلفة الكلية (Total Cost) تساوي…', o: ['ثابتة − متغيرة', 'ثابتة + متغيرة', 'متغيرة × ثابتة', 'المبيعات − الربح فقط'], a: 1, e: 'Total Cost = Fixed + Variable.' },
-    { q: 'أي مما يلي كلفة ثابتة؟', o: ['المواد الأولية', 'أجور خط الإنتاج', 'اندثار المكائن', 'الوقود'], a: 2, e: 'الاندثار ثابت ما يتغير بحجم الإنتاج. الباقي متغيرة.' },
-    { q: 'يعتبر المشروع مجدياً اقتصادياً عادةً إذا كانت…', o: ['الربحية > 25% ومدة الاسترداد < 4 سنوات', 'الربحية < 25% ومدة الاسترداد > 4 سنوات', 'الربحية > 10% فقط', 'مدة الاسترداد > 10 سنوات'], a: 0, e: 'القاعدة بالفصل: ربحية أعلى من 25% واسترداد أقل من 4 سنوات.' },
-    { q: 'رأس مال مستثمر 5,000,000 دينار وربح سنوي 1,500,000. الربحية = ؟', o: ['15%', '25%', '30%', '33%'], a: 2, e: '1,500,000 ÷ 5,000,000 × 100 = 30%.' },
-    { q: 'رأس مال 6,000,000، ربح 1,500,000، اندثار 500,000. مدة الاسترداد = ؟', o: ['2 سنة', '3 سنوات', '4 سنوات', '6 سنوات'], a: 1, e: '6,000,000 ÷ (1,500,000 + 500,000) = 3 سنوات.' },
-    { q: 'نقطة التعادل هي النقطة اللي يتساوى بيها…', o: ['الإنتاج والاستهلاك', 'الإيراد الكلي والكلفة الكلية', 'الأجور والأرباح', 'الكلفة الثابتة والمتغيرة'], a: 1, e: 'عند التعادل: ربح = صفر وخسارة = صفر، أي Revenue = Total Cost.' },
-    { q: 'ثابتة = 1500، مبيعات = 7000، متغيرة = 3500. قيمة التعادل = ؟', o: ['1500', '3000', '3500', '5000'], a: 1, e: '1500 ÷ (1 − 3500/7000) = 1500 ÷ 0.5 = 3000.' },
-    { q: 'أي من التالي من عيوب تحليل التعادل؟', o: ['يفترض ثبات سعر البيع', 'يعتمد على الحاسوب فقط', 'لا يحتاج بيانات', 'يعمل فقط للقطاع العام'], a: 0, e: 'العيوب: افتراض الخطية، ثبات السعر، والحاجة للتعديل مع تغير الأسعار والأجور.' }
-  ]
-},
+// Game State
+let gameState = 'START'; // START, PLAYING, GAMEOVER, WIN
+let rhythmBeat = 0; // 0 = Beat A, 1 = Beat B
+let lastBeatTime = 0;
+const BEAT_INTERVAL = 800; // ms per beat
 
-/* ───────────────────────── المرحلة 3 ───────────────────────── */
-{
-  id: 3, ch: 'الفصل الثاني — ج2', name: 'ورشة الإنتاجية والوقت', short: 'الإنتاجية ودراسة العمل',
-  intro: 'يا سلام! وصلنا لورشة الإنتاجية ⏱️ — هنا نتعلم نخلي العامل والمكينة يشتغلون أحسن بدون تعب زايد. والروبوت بِت عنده ساعة توقيت!',
-  lessons: [
-    { ic: '🌳', t: 'الإنتاجية شنو؟',
-      b: `تسقي حديقة بدلو. إذا سقيت <b>10 أشجار</b> بساعة أحسن من <b>5 أشجار</b> بنفس الساعة = إنتاجية أعلى 🌳<br><br>
-          <b>الإنتاجية = كفاءة استخدام المدخلات</b> (عوامل الإنتاج).<br>
-          ⚠️ <b>مهم جداً للامتحان:</b> زيادة حجم الإنتاج <b>لا تعني بالضرورة</b> زيادة الإنتاجية! ممكن تضيف 100 عامل وتنتج أكثر بس بكفاءة أقل.`,
-      tip: 'إنتاج أكثر ≠ إنتاجية أعلى',
-      terms: [['Productivity', 'الإنتاجية']] },
-    { ic: '🏭', t: 'ليش نزيد الإنتاجية؟',
-      b: `<b>على مستوى المصنع:</b><br>
-          • تحسين إدارة الإنتاج لاستغلال الطاقات بأفضل شكل<br>• تحسين بيئة العمل والعلاقات الإنسانية<br>• تخطيط علمي وتخطيط موقع العمل وتطوير المكائن ليسير الإنتاج بسلاسة<br><br>
-          <b>على مستوى العامل:</b><br>
-          • رفع المهارة بالتدريب<br>• دراسة الحركة والزمن<br>• تحسين الرفاه الاجتماعي وظروف العمل<br>• رفع المعنويات بأجور عادلة وحوافز ومكافآت<br>• خلق فرص عمل جديدة`,
-      terms: [['Incentive Systems', 'نظم الحوافز'], ['Workforce Development', 'تنمية القوى العاملة']] },
-    { ic: '📏', t: 'قياس الإنتاجية: كم وكيف',
-      b: `للإنتاجية <b>بُعدين</b>: <b>كمّي</b> (حجم الإنتاج) و<b>نوعي</b> (جودة المنتج). والقاعدة: <b>ازيد الإنتاجية بدون التضحية بالجودة</b>.<br><br>
-          <b>إذا المصنع ينتج منتجات متعددة:</b><br>
-          1️⃣ <b>طريقة معامل التحويل (Conversion Factor)</b>: تحوّل المنتجات المختلفة لوحدة قياس موحدة (مثل تحويل تفاح وبرتقال لـ«وحدة فاكهة») وبعدها تقارنها بوقت العمل الكلي.<br>
-          2️⃣ <b>الطريقة النقدية (Monetary)</b>: قيمة الوحدات المنتجة بسعر البيع ÷ ساعات العمل المباشر.`,
-      terms: [['Conversion Factor', 'معامل التحويل (التكافؤ)']] },
-    { ic: '🧰', t: '12 طريقة لزيادة الإنتاجية',
-      b: `1. تحسين ظروف العمل<br>2. تبسيط العمل وإلغاء الحركات غير الضرورية<br>3. تقييم الوظائف<br>4. تدريب العاملين<br>5. التخصص<br>6. صيانة المكائن بفعالية<br>7. نظم الحوافز والمكافآت<br>8. تحسين العلاقات الإنسانية<br>9. تخطيط المصنع ومناولة المواد<br>10. السيطرة على كلف الإنتاج<br>11. تخطيط الإنتاج ومراقبته<br>12. ضبط جودة المنتج`,
-      tip: 'مثلث الحفظ: بيئة (1) • بشر (3–5، 7–8) • تخطيط وجودة (9–12)' },
-    { ic: '👀', t: 'دراسة العمل (Work Study)',
-      b: `مثل مدرب كرة يراقب اللاعب: أي حركات زايدة؟ وشكد وقت يحتاج؟ ⚽<br><br>
-          تهدف للاستخدام الأمثل للموارد البشرية والمادية، ولها <b>فرعين متكاملين:</b><br>
-          1️⃣ <b>دراسة الحركة (Motion Study)</b>: تحليل أساليب العمل وإلغاء الحركات غير الضرورية.<br>
-          2️⃣ <b>قياس الزمن (Time Measurement)</b>: تحديد الوقت اللازم لإنجاز العمل بالطريقة المقترحة.<br><br>
-          <b>فوائدها:</b> تحسين تصميم موقع العمل، استغلال الموارد، تحسين الظروف، وضع حوافز مناسبة، تبسيط العمليات وتقليل جهد العامل، التحكم بالعمليات والكلف.`,
-      terms: [['Motion Study', 'دراسة الحركة'], ['Time Measurement', 'قياس الزمن']] },
-    { ic: '🪜', t: 'خطوات دراسة العمل الثمانية',
-      b: `1️⃣ <b>Select اختر</b>: العملية اللي تحتاج تطوير (اختناقات متكررة، مسافات مناولة طويلة، أعطال، حوادث كثيرة)<br>
-          2️⃣ <b>Record سجّل</b>: كل الحقائق بجداول ومخططات<br>
-          3️⃣ <b>Examine افحص</b>: شنو يُلغى أو يُدمج أو يُبسّط<br>
-          4️⃣ <b>Develop طوّر</b>: اقترح طريقة جديدة أحسن<br>
-          5️⃣ <b>Define عرّف</b>: وثّق مراحل تنفيذ الطريقة<br>
-          6️⃣ <b>Measure قِس</b>: الوقت بالطريقة الجديدة<br>
-          7️⃣ <b>Apply طبّق</b>: درّب العمال ووفّر الأدوات وعيّن مشرفاً خبيراً<br>
-          8️⃣ <b>Maintain حافظ</b>: تابع وعدّل عند الانحراف`,
-      tip: 'اختار، سجّل، افحص، طوّر، عرّف، قِس، طبّق، حافظ' },
-    { ic: '⏲️', t: 'الوقت القياسي (Standard Time)',
-      b: `تراقب عامل يلحم قطعة PCB خمس مرات وتحسب المعدل:<br><br>
-          <div class="formula">Observed Time → Normal Time → + Allowances → Standard Time</div>
-          1. <b>الوقت المُلاحَظ (Observed)</b>: معدل الأوقات الفعلية المقاسة بالمراقبة المباشرة.<br>
-          2. <b>الوقت الاعتيادي (Normal)</b>: الوقت اللي يحتاجه عامل اعتيادي يشتغل بكفاءة <b>100%</b>.<br>
-          3. <b>الوقت القياسي (Standard)</b>: الوقت الاعتيادي + <b>سماحيات</b> للحاجات الشخصية والتعب والتأخيرات الحتمية (عادةً <b>لا تزيد عن 15%</b>).`,
-      tip: 'الوقت القياسي أكبر من الاعتيادي — لأنه يشمل السماحيات',
-      terms: [['Standard Time', 'الوقت القياسي'], ['Normal Time', 'الوقت الاعتيادي'], ['Allowances', 'السماحيات']] },
-    { ic: '🧠', t: 'ملخص الفصل بخمس أفكار',
-      b: `<div class="tl"><span>1</span><b>دراسة الجدوى</b> — المشروع يستاهل الاستثمار؟</div>
-          <div class="tl"><span>2</span><b>الكلف ونقطة التعادل</b> — متى يغطي المشروع كلفته؟</div>
-          <div class="tl"><span>3</span><b>الربح وحجم الإنتاج</b> — شنو أفضل مستوى إنتاج؟</div>
-          <div class="tl"><span>4</span><b>الإنتاجية</b> — نستغل مواردنا بكفاءة؟</div>
-          <div class="tl"><span>5</span><b>دراسة العمل والزمن</b> — أفضل طريقة وكم وقت؟</div>
-          <b>الهدف النهائي:</b> أفضل استغلال للموارد البشرية والمادية والتكنولوجية بأقل كلفة، مع الجودة والربحية.` }
-  ],
-  train: [
-    { type: 'order', title: 'رتّب خطوات دراسة العمل',
-      desc: 'اضغط على الخطوات حسب الترتيب الصحيح (من الأولى إلى الثامنة).',
-      steps: ['Select — اختر العملية', 'Record — سجّل الحقائق', 'Examine — افحص وحلّل', 'Develop — طوّر طريقة جديدة', 'Define — وثّق الطريقة', 'Measure — قِس الزمن', 'Apply — طبّق ودرّب', 'Maintain — تابع وحافظ'] },
-    { type: 'sim', sim: 'stdtime', title: 'حاسبة الوقت القياسي' }
-  ],
-  quiz: [
-    { q: 'هل زيادة حجم الإنتاج تعني دائماً زيادة الإنتاجية؟', o: ['نعم دائماً', 'لا، ليس بالضرورة', 'فقط في القطاع العام', 'فقط مع مكائن أوتوماتيكية'], a: 1, e: 'الإنتاجية = كفاءة استخدام المدخلات، فممكن يزيد الإنتاج بكفاءة أقل.' },
-    { q: 'بُعدا الإنتاجية هما…', o: ['الزمن والمكان', 'الكمي والنوعي', 'الأجر والربح', 'المواد والمكائن'], a: 1, e: 'بعد كمّي (حجم الإنتاج) وبعد نوعي (الجودة).' },
-    { q: 'أي طريقة تحوّل المنتجات المتعددة إلى وحدة قياس موحدة لحساب إنتاجية العمل؟', o: ['الطريقة النقدية', 'معامل التحويل (Conversion Factor)', 'مخطط غانت', 'تحليل ماركوف'], a: 1, e: 'معامل التحويل يوحّد الوحدات. أما النقدية فتستعمل قيمة المبيعات ÷ ساعات العمل.' },
-    { q: 'دراسة العمل (Work Study) تتكون من فرعين:', o: ['دراسة الحركة وقياس الزمن', 'الجدوى والتعادل', 'التخطيط والرقابة', 'التدريب والتحفيز'], a: 0, e: 'Motion Study + Time Measurement.' },
-    { q: 'شنو الخطوة الأولى بدراسة العمل؟', o: ['Record', 'Select', 'Apply', 'Measure'], a: 1, e: 'الأولى Select: اختيار العملية التي تحتاج تطوير.' },
-    { q: 'بأي خطوة نختبر الطريقة الجديدة بتدريب العمال وتوفير الأدوات؟', o: ['Examine', 'Define', 'Apply', 'Maintain'], a: 2, e: 'Apply = التطبيق: تدريب + أدوات + مشرف خبير.' },
-    { q: 'من علامات اختيار عملية لدراسة العمل:', o: ['اختناقات متكررة تعيق سير الإنتاج', 'انخفاض عدد العمال', 'انتهاء المنافسة', 'قلة المبيعات فقط'], a: 0, e: 'علامات الاختيار: اختناقات، مسافات مناولة طويلة، أعطال متكررة، حوادث كثيرة.' },
-    { q: 'الوقت الاعتيادي (Normal Time) هو…', o: ['وقت أسرع عامل', 'وقت عامل اعتيادي يعمل بكفاءة 100%', 'الوقت الكلي مع السماحيات', 'أطول وقت لوحظ'], a: 1, e: 'Normal Time = الوقت اللازم لعامل اعتيادي بكفاءة 100%.' },
-    { q: 'الوقت الاعتيادي 40 ثانية وسماحيات 10%. الوقت القياسي = ؟', o: ['36 ثانية', '40 ثانية', '44 ثانية', '50 ثانية'], a: 2, e: '40 × 1.10 = 44 ثانية. (وتذكّر: السماحيات عادةً لا تتجاوز 15%).' }
-  ]
-},
-
-/* ───────────────────────── المرحلة 4 ───────────────────────── */
-{
-  id: 4, ch: 'الفصل الثالث — ج1', name: 'قاعة الإدارة', short: 'التنظيم الإداري',
-  intro: 'أهلاً بالمدير المستقبلي! 🏢 هذي قاعة الإدارة. بدون تنظيم، المصنع مثل فريق كرة كلهم يركضون ورا الكرة! خلّينا نعرف شلون نقسّم المسؤوليات.',
-  lessons: [
-    { ic: '🗂️', t: 'التنظيم الإداري والتكنولوجي',
-      b: `تخيّل فريق كرة بدون مراكز: الكل يركض ورا الكرة ⚽ فوضى! <b>التنظيم</b> يقول: هذا حارس، هذا مدافع، هذا مهاجم.<br><br>
-          <b>الهدف:</b> تحديد وتنسيق النشاطات لتحقيق أهداف المصنع، <b>تجنب تكرار العمل</b>، توضيح <b>المسؤوليات والصلاحيات</b>، ورفع كفاءة الإنتاج.<br>
-          وذلك بتقسيم النشاطات لمجموعات، لكل مجموعة <b>مشرف</b> وصلاحية لإنجاز مهامه.`,
-      terms: [['Organizational Structure', 'الهيكل التنظيمي']] },
-    { ic: '🪜', t: '6 خطوات لتنظيم المصنع',
-      b: `1️⃣ <b>تحديد الأهداف العامة</b>: أنواع وكميات المنتجات والأهداف.<br>
-          2️⃣ <b>التخطيط والسياسات</b>: خطط وسياسات + اختيار العمليات والأساليب.<br>
-          3️⃣ <b>تحديد المهام والواجبات</b>: مواد، مكائن، عمال، جداول تشغيل وصيانة.<br>
-          4️⃣ <b>تحديد الوظائف المطلوبة</b> وتصميم الهيكل التنظيمي.<br>
-          5️⃣ <b>تجميع الوظائف وتحديد المسؤوليات</b>: أقسام ولكل قسم مشرف.<br>
-          6️⃣ <b>تفويض الصلاحيات</b>: إعطاء المديرين السلطة لأداء واجباتهم.`,
-      tip: 'هدف – خطة – مهام – وظائف – تجميع – تفويض' },
-    { ic: '👥', t: 'نطاق الإشراف (Span of Control)',
-      b: `معلم يراقب 5 أطفال أسهل من 50! 😅<br><br>
-          <b>نطاق الإشراف</b> = عدد الموظفين اللي يقدر مدير يشرف عليهم <b>بفعالية</b>.<br>
-          يعتمد على: <b>نوع العمل، المستوى الإداري، خبرة العمال، تعقيد المهام، استخدام التكنولوجيا ونظم المعلومات</b>.<br>
-          النطاق الواسع يحتاج <b>نظم اتصال ومراقبة وسيطرة</b> فعالة.`,
-      terms: [['Span of Control', 'نطاق الإشراف']] },
-    { ic: '🗺️', t: 'المخطط التنظيمي (Organizational Chart)',
-      b: `رسم يبيّن هيكل المصنع، ويتضمن:<br>
-          • المستويات الإدارية<br>• خطوط السلطة والمسؤولية<br>• العلاقات بين الأقسام والوحدات<br>• قنوات الاتصال والتنسيق<br><br>
-          يفيد بتوضيح الواجبات وتحديد المسؤوليات وشرح العلاقات بين الأقسام.`,
-      terms: [['Organizational Chart', 'المخطط التنظيمي']] },
-    { ic: '📏', t: 'النوع 1: التنظيم الخطي (Line)',
-      b: `مثل دكان صغير: صاحب الدكان ← عامل. يستخدم بالمصانع <b>الصغيرة</b>. السلطة تنزل من المدير ← المشرفين ← العمال، وكل موظف ياخذ أوامره من رئيسه المباشر.<br><br>
-          <b>المدير:</b> يضع السياسات، يوفر الموارد، يوزع المسؤوليات، يراقب الكلف والأجور.<br>
-          <b>المشرف:</b> يحدد طريقة العمل، يوزع المهام، يراقب الإنتاج.<br>
-          <b>العامل:</b> ينفذ ويلتزم بالتعليمات ويحافظ على الجودة.<br><br>
-          ✅ سلطة واضحة، اتصال سهل، قرارات سريعة، رقابة سهلة، حل سريع للطوارئ.<br>
-          ❌ ما يصلح للمصانع الكبيرة، سلطة مركزة (تتأخر القرارات إذا غاب المدير)، عبء كبير على المدير، تعاون ضعيف بين المجموعات.`,
-      tip: 'خطي = صغير + سريع + المدير يشيل كل شي',
-      terms: [['Line Organization', 'التنظيم الخطي']] },
-    { ic: '🧑‍🏫', t: 'النوع 2: الخطي-الاستشاري (Line & Staff)',
-      b: `للمصانع <b>المتوسطة</b>. نفس الخطي، لكن نضيف <b>مستشارين وخبراء</b> (فنيين، ماليين، إداريين) يقدمون نصائح للمدير.<br><br>
-          ✅ حل المشاكل أسرع (الاستفادة من الخبرة)، فصل الأنشطة الفنية عن الإدارية، تطوير مهارات المديرين، قرارات أحسن بالاستشارة.<br>
-          ❌ تأخر القرارات بسبب الاستشارة، ضعف استقلالية المدير، المدير يتهرب من المسؤولية ويلوم الخبراء.<br><br>
-          <b>الخلاصة:</b> يجمع السلطة المباشرة مع الخبرة، بشرط وضوح الصلاحيات والمسؤوليات.`,
-      terms: [['Line-and-Staff Organization', 'التنظيم الخطي الاستشاري']] },
-    { ic: '🏛️', t: 'النوع 3: الوظيفي (Functional) + مستويات الإدارة',
-      b: `للمصانع <b>الكبيرة</b> بعمليات ومنتجات كثيرة. نجمّع الأنشطة حسب <b>الوظيفة</b> بأقسام متخصصة.<br>
-          ✅ تحقيق مبدأ التخصص، مسؤوليات واضحة.<br>❌ صعوبة الاتصال والتنسيق بين الأنشطة، صعوبة اتخاذ قرارات سريعة.<br><br>
-          <b>مستويات الإدارة الثلاثة:</b><br>
-          🔝 <b>الإدارة العليا (Top)</b>: المدير العام ومساعدوه — يضعون السياسات والأهداف العامة.<br>
-          🔹 <b>الإدارة الوسطى (Middle)</b>: رؤساء الأقسام ومساعدوهم ومديرو الشعب — يحوّلون قرارات العليا لخطط تفصيلية ويراقبون تنفيذها.<br>
-          🔸 <b>الإدارة الدنيا (First-Line)</b>: المشرفون والملاحظون — يشرفون مباشرة على العمال.`,
-      tip: 'عليا تقرر • وسطى تخطط • دنيا تشرف',
-      terms: [['Functional Organization', 'التنظيم الوظيفي']] }
-  ],
-  train: [
-    { type: 'sort', title: 'وين مكانه بالهرم الإداري؟',
-      desc: 'اختر المستوى الإداري المناسب لكل منصب.',
-      buckets: ['الإدارة العليا', 'الإدارة الوسطى', 'الإدارة الدنيا'],
-      items: [
-        { t: 'المدير العام', b: 0, e: 'المدير العام ومساعدوه = إدارة عليا.' },
-        { t: 'رئيس قسم الإنتاج', b: 1, e: 'رؤساء الأقسام = إدارة وسطى.' },
-        { t: 'ملاحظ (Foreman) خط التجميع', b: 2, e: 'الملاحظون والمشرفون = إدارة دنيا.' },
-        { t: 'مساعد المدير العام', b: 0, e: 'مساعدو المدير العام ضمن الإدارة العليا.' },
-        { t: 'مدير شعبة الصيانة', b: 1, e: 'مديرو الشعب = إدارة وسطى.' },
-        { t: 'مشرف يراقب 10 عمال', b: 2, e: 'يشرف مباشرة على العمال = إدارة دنيا.' }
-      ] },
-    { type: 'sort', title: 'أي تنظيم يناسب هذا المصنع؟',
-      desc: 'اختر نوع التنظيم المناسب لكل حالة.',
-      buckets: ['خطي (Line)', 'خطي استشاري', 'وظيفي'],
-      items: [
-        { t: 'ورشة صغيرة فيها مدير و3 مشرفين وعمال', b: 0, e: 'مصنع صغير وعمليات بسيطة = خطي.' },
-        { t: 'مصنع متوسط يستعين بخبراء مالية وفنيين لمساعدة المدير', b: 1, e: 'إضافة مستشارين للمدير = خطي استشاري.' },
-        { t: 'مصنع ضخم بعشرات الأقسام والمنتجات', b: 2, e: 'كبير ومتعدد العمليات = وظيفي.' },
-        { t: 'السلطة تنزل من المدير للمشرف للعامل مباشرة', b: 0, e: 'هذا وصف التنظيم الخطي.' },
-        { t: 'نقطة ضعفه: المدير ممكن يلوم الخبراء إذا أخطأ', b: 1, e: 'من عيوب الخطي الاستشاري.' }
-      ] }
-  ],
-  quiz: [
-    { q: 'من أهداف تنظيم المنشأة الصناعية…', o: ['زيادة ازدواجية العمل', 'تجنب تكرار العمل وتوضيح المسؤوليات والصلاحيات', 'تقليل عدد الأقسام فقط', 'إلغاء المشرفين'], a: 1, e: 'التنظيم يمنع ازدواج العمل ويوضح المسؤوليات والصلاحيات.' },
-    { q: 'نطاق الإشراف (Span of Control) هو…', o: ['عدد الأقسام بالمصنع', 'عدد الموظفين اللي يقدر مدير يشرف عليهم بفعالية', 'مساحة المصنع', 'عدد المكائن'], a: 1, e: 'هو عدد العاملين الذين يستطيع المدير الإشراف عليهم بفعالية.' },
-    { q: 'التنظيم الخطي (Line) مناسب لـ…', o: ['المصانع الكبيرة جداً', 'المصانع الصغيرة', 'الشركات المتعددة الجنسيات', 'المشاريع الحكومية فقط'], a: 1, e: 'الخطي أبسط تنظيم ويُستخدم عادةً بالمصانع الصغيرة.' },
-    { q: 'من عيوب التنظيم الخطي…', o: ['بطء الاتصال', 'تتأخر القرارات إذا غاب المدير لأن السلطة مركزة فيه', 'كثرة المستشارين', 'صعوبة تحديد المسؤولية'], a: 1, e: 'السلطة والمسؤولية مركّزة بالمدير فيتأخر القرار عند غيابه.' },
-    { q: 'شنو يضيف التنظيم الخطي الاستشاري على الخطي؟', o: ['عمال أكثر', 'مستشارين وخبراء', 'مكائن جديدة', 'أقسام تسويق'], a: 1, e: 'يضيف مستشارين وخبراء فنيين وماليين وإداريين.' },
-    { q: 'أي مستوى إداري يحوّل قرارات الإدارة العليا إلى خطط تفصيلية ويراقب تنفيذها؟', o: ['العليا', 'الوسطى', 'الدنيا', 'لا أحد'], a: 1, e: 'الإدارة الوسطى (رؤساء الأقسام ومساعدوهم ومديرو الشعب).' },
-    { q: 'من عيوب التنظيم الوظيفي…', o: ['ضعف التخصص', 'صعوبة الاتصال والتنسيق بين الأنشطة', 'غموض المسؤوليات', 'قلة الأقسام'], a: 1, e: 'يحقق التخصص ويوضح المسؤوليات لكن يصعّب التنسيق والقرارات السريعة.' },
-    { q: 'الملاحظون (Foremen) يتبعون لأي مستوى؟', o: ['الإدارة العليا', 'الإدارة الوسطى', 'الإدارة الدنيا (First-Line)', 'خارج الهيكل'], a: 2, e: 'المشرفون والملاحظون يشرفون مباشرة على العمال = الإدارة الدنيا.' },
-    { q: 'شنو الخطوة الأولى من خطوات تنظيم المصنع؟', o: ['تفويض الصلاحيات', 'تحديد الأهداف العامة', 'تجميع الوظائف', 'تعيين المشرفين'], a: 1, e: 'الأولى: تحديد الأهداف العامة (أنواع وكميات المنتجات)، وآخرها تفويض الصلاحيات.' }
-  ]
-},
-
-/* ───────────────────────── المرحلة 5 ───────────────────────── */
-{
-  id: 5, ch: 'الفصل الثالث — ج2', name: 'خط التجميع', short: 'التنظيم التكنولوجي والتخطيط',
-  intro: 'وصلنا لقلب المصنع! 🏭 هنا ترى كيف تنتقل لوحات الـPCB على سير التجميع. نتعلم ترتيب المكائن والمراحل، وشلون نختصر وقت الدورة.',
-  lessons: [
-    { ic: '🧩', t: 'التنظيم التكنولوجي شنو؟',
-      b: `ترتيب أثاث غرفتك + ترتيب خطوات تحضير الفطور بأقل حركة 🍳<br><br>
-          <b>هو دراسة ترتيب وتسلسل مراحل وعمليات التصنيع</b> لتحديد:<br>
-          1. أنواع المكائن والمعدات المطلوبة<br>2. عددها<br>3. أفضل أماكنها داخل المصنع<br>4. أفضل تسلسل للعمليات لتقليل زمن الدورة وزيادة الكفاءة.`,
-      terms: [['Technological Organization', 'التنظيم التكنولوجي'], ['Plant Layout', 'تخطيط المصنع']] },
-    { ic: '🏗️', t: 'العوامل الثلاثة + أنواع الصناعة',
-      b: `التنظيم التكنولوجي تتحكم به <b>3 عوامل</b>: <b>نوع الصناعة، حجم (نوع) الإنتاج، وطبيعة ومواصفات المنتج</b>.<br><br>
-          <b>1) نوع الصناعة:</b><br>
-          ⛏️ <b>استخراجية (Extractive)</b>: استخراج خام الحديد والمعادن من الأرض وفصل الشوائب.<br>
-          🏭 <b>تحويلية (Manufacturing)</b>:<br>
-          • <b>معدنية</b>: معالجة الخامات وإنتاج صفائح معدنية<br>
-          • <b>هندسية</b>: سيارات ومحركات (وكذلك أجهزة الاتصالات والـPCB 😉)<br>
-          • <b>كيميائية</b>: تكرير النفط، الأسمدة، الأصباغ<br>
-          • <b>نسيجية</b>: غزل ونسيج وملابس`,
-      terms: [['Extractive Industries', 'الصناعات الاستخراجية'], ['Engineering Industries', 'الصناعات الهندسية']] },
-    { ic: '🧮', t: 'نوع الإنتاج: 3 أنواع',
-      b: `🚰 <b>مستمر (Continuous)</b> — مثل حنفية ماي تجري: كميات كبيرة منتجات متجانسة، تنوع قليل، تخطيط سهل، تسلسل ثابت. <i>أمثلة: السكر، الأسمدة.</i><br><br>
-          🪡 <b>حسب الطلب (Job Order)</b> — مثل خياط يخيط بدلة على مقاسك: منتجات خاصة بطلب الزبون، مهارة عالية، دورة طويلة، تراكم منتجات تحت التشغيل (WIP)، تخطيط وجودة أصعب. <i>أمثلة: الطائرات، السفن، الأجهزة الطبية المعقدة.</i><br><br>
-          🍞 <b>متكرر (Repetitive)</b> — معمل خبز: تكرار عالي، تخطيط دقيق، موازنة بين المراحل، مرونة للتغييرات. <i>أمثلة: السيارات والأجهزة الكهربائية المنزلية.</i>`,
-      tip: 'مستمر = حنفية • حسب الطلب = خياط • متكرر = معمل خبز',
-      terms: [['Continuous Production', 'إنتاج مستمر'], ['Job Order Production', 'إنتاج حسب الطلب'], ['Repetitive Production', 'إنتاج متكرر'], ['Work-in-Process (WIP)', 'منتجات تحت التشغيل']] },
-    { ic: '📦', t: 'مواصفات المنتج',
-      b: `طبيعة المنتج تحدد المكائن وترتيبها:<br><br>
-          1. <b>الحجم والوزن</b> ← معدات المناولة وسعة المكائن<br>
-          2. <b>الأبعاد والشكل</b> ← عمليات التشغيل والتشكيل<br>
-          3. <b>الحالة الفيزيائية</b> (صلابة، سيولة…) ← اختيار المعدات<br>
-          4. <b>الخواص الكيميائية</b> (تآكل، تفاعل) ← مواد بناء المعدات<br>
-          5. <b>الأخطار</b> ← إجراءات سلامة وتخزين<br><br>
-          💧 سوائل ← خزانات وأنابيب ومضخات<br>🔩 أجزاء معدنية صلبة ← قطع وتشكيل وتشغيل ومعالجة حرارية<br>🧪 أحماض ← معدات مقاومة للتآكل`,
-      tip: 'حجم/وزن – أبعاد – حالة – كيمياء – أخطار' },
-    { ic: '⏱️', t: 'دورة الإنتاج (Production Cycle)',
-      b: `تجهّز ملعب الكرة (T1) وبعدين تلعب (T2). إذا التجهيز ياخذ وقت أكثر من اللعب… مشكلة! ⚽<br><br>
-          <b>دورة الإنتاج:</b> الزمن الكلي من دخول المواد الخام إلى خروجها منتجاً جاهزاً. وتقليلها مؤشر مباشر لكفاءة الإدارة.<br>
-          <div class="formula">T = T1 + T2<br>T1 = Setup Time<br>T2 = Processing Time</div>
-          الاستغلال الأمثل عندما <b>T ÷ T2 = 1</b>. وإذا زادت النسبة عن 1 فهذا <b>سوء تنظيم</b> (تهيئة أو انتظار زائد).`,
-      tip: 'T/T2 = 1 ممتاز • أكبر من 1 = تنظيم ضعيف',
-      terms: [['Production Cycle', 'دورة الإنتاج'], ['Setup Time (T1)', 'زمن التهيئة'], ['Processing Time (T2)', 'زمن التشغيل']] },
-    { ic: '🔀', t: 'طرق حركة المواد (3 طرق)',
-      b: `🍽️ تغسل صحون وتنشفها:<br><br>
-          1️⃣ <b>تتابعية (Sequential)</b>: تغسل <b>كل</b> الصحون وبعدين تنشفها كلها. العامل ينهي الدفعة كاملة ثم يسلّمها دفعة وحدة. <i>تناسب منتجات كبيرة مختلفة المواصفات وأزمنة المراحل متباينة جداً.</i><br><br>
-          2️⃣ <b>متوازية (Parallel)</b>: تغسل صحن وتعطيه فوراً للي ينشف. تنقل <b>كل قطعة</b> فور اكتمالها. <i>تناسب منتجات متشابهة الحجم والمواصفات وأزمنتها متقاربة.</i><br><br>
-          3️⃣ <b>مختلطة (Combined)</b>: تنقل بـ<b>دفعات فرعية</b> لتقليل الوقت الضائع. <i>تناسب منتجات متجانسة لكن أزمنة المراحل مختلفة.</i>`,
-      terms: [['Sequential Movement', 'الحركة التتابعية'], ['Parallel Movement', 'الحركة المتوازية'], ['Combined Movement', 'الحركة المختلطة']] },
-    { ic: '🧱', t: 'أنواع التخطيط (Layouts) — 4 أنواع',
-      b: `1️⃣ <b>تخطيط المنتج (Product / Line)</b>: منتج واحد أو منتجات متشابهة (إنتاج مستمر/كمي). المكائن بتسلسل خط واحد، المواد تدخل أول الخط وتطلع منتجاً بآخره. فوائده: يقلل زمن الدورة، يزيد الإنتاج ويقلل كلفة الوحدة، يقلل المساحة، يحسّن الجودة، رقابة أسهل، مناولة أقل.<br><br>
-          2️⃣ <b>التخطيط الوظيفي (Functional / Process)</b>: تنوع كبير بالمنتجات. نجمّع المكائن المتشابهة بأقسام (سباكة، حدادة وكبس، قطع، طلاء…). يحتاج مكائن عامة الأغراض وعمالة ماهرة.<br><br>
-          3️⃣ <b>التخطيط المختلط (Hybrid)</b>: للصناعات الكبيرة كالسيارات والمعدات الكهربائية — تخطيط المنتج للتصنيع + وظيفي للتجميع (أو بالعكس).<br><br>
-          4️⃣ <b>الموقع الثابت (Fixed-Position)</b>: السفن والطائرات والقاطرات — المنتج يبقى ثابتاً، والمكائن والعمال تجي إليه. كلفة عالية جداً.`,
-      tip: 'منتج=خط | وظيفي=أقسام | مختلط=سيارات | ثابت=سفن',
-      terms: [['Product Layout', 'تخطيط المنتج'], ['Functional Layout', 'التخطيط الوظيفي'], ['Hybrid Layout', 'التخطيط المختلط'], ['Fixed-Position Layout', 'تخطيط الموقع الثابت']] }
-  ],
-  train: [
-    { type: 'sort', title: 'أي تخطيط (Layout) يناسب؟',
-      desc: 'اختر نوع التخطيط المناسب لكل حالة.',
-      buckets: ['المنتج (خط)', 'وظيفي', 'مختلط', 'موقع ثابت'],
-      items: [
-        { t: 'بناء سفينة ضخمة', b: 3, e: 'المنتج كبير ويبقى ثابتاً والمكائن والعمال تجي إليه.' },
-        { t: 'خط ينتج نوع واحد من الشواحن بكميات كبيرة', b: 0, e: 'منتج واحد وإنتاج كمي = تخطيط المنتج.' },
-        { t: 'ورشة بأقسام: قطع، لحام، طلاء، لمنتجات متنوعة', b: 1, e: 'تجميع المكائن المتشابهة بأقسام = وظيفي.' },
-        { t: 'مصنع سيارات (تصنيع بخط + تجميع بأقسام)', b: 2, e: 'يجمع الاثنين = مختلط.' },
-        { t: 'تصنيع طائرة', b: 3, e: 'المنتج ثابت بموقعه لحجمه الكبير.' },
-        { t: 'يحتاج مكائن عامة الأغراض وعمالة عالية المهارة', b: 1, e: 'هذي متطلبات التخطيط الوظيفي.' }
-      ] },
-    { type: 'sim', sim: 'cycle', title: 'سير الإنتاج: متتابع أم متوازي؟' }
-  ],
-  quiz: [
-    { q: 'مصانع السيارات والمحركات تنتمي لأي نوع صناعة؟', o: ['استخراجية', 'هندسية', 'كيميائية', 'نسيجية'], a: 1, e: 'الصناعات الهندسية: سيارات ومحركات (تصنيع وتجميع).' },
-    { q: 'من خصائص الإنتاج المستمر (Continuous)…', o: ['منتجات حسب طلب الزبون', 'كميات كبيرة من منتجات متجانسة بتسلسل ثابت', 'تنوع عالي جداً', 'دورة تصنيع طويلة جداً'], a: 1, e: 'مستمر: كميات كبيرة، تنوع قليل، تخطيط سهل، تسلسل ثابت (مثل السكر).' },
-    { q: 'أي مثال يناسب الإنتاج حسب الطلب (Job Order)؟', o: ['الأسمدة', 'السكر', 'بناء السفن', 'مياه الشرب'], a: 2, e: 'السفن والطائرات والأجهزة الطبية المعقدة = حسب الطلب.' },
-    { q: 'زمن دورة الإنتاج T يساوي…', o: ['T1 − T2', 'T1 + T2', 'T1 × T2', 'T2 ÷ T1'], a: 1, e: 'T = زمن التهيئة T1 + زمن التشغيل T2.' },
-    { q: 'إذا كانت النسبة T/T2 أكبر من 1 فهذا يعني…', o: ['كفاءة مثالية', 'سوء تنظيم (تهيئة أو انتظار زائد)', 'زيادة الأرباح', 'قلة العمال'], a: 1, e: 'المثالي T/T2 = 1. أكبر من 1 = سوء تنظيم.' },
-    { q: 'الحركة المتوازية (Parallel) تناسب…', o: ['منتجات كبيرة بأزمنة متباينة', 'منتجات متشابهة الحجم والمواصفات بأزمنة متقاربة', 'منتجات خاصة جداً', 'إنتاج بدون مراحل'], a: 1, e: 'تنقل كل قطعة فور اكتمالها — تناسب التشابه وتقارب الأزمنة.' },
-    { q: 'أي تخطيط يُستخدم عند بناء السفن والطائرات؟', o: ['تخطيط المنتج', 'الوظيفي', 'المختلط', 'الموقع الثابت'], a: 3, e: 'المنتج ثابت، والمكائن والعمال تُنقل إليه (Fixed-Position).' },
-    { q: 'التخطيط الوظيفي يتطلب…', o: ['مكائن متخصصة بمنتج واحد', 'مكائن عامة الأغراض وعمالة ماهرة', 'عمالة غير ماهرة', 'خط إنتاج واحد'], a: 1, e: 'يتطلب مكائن عامة الأغراض وعمالة عالية الخبرة.' },
-    { q: '🔥 تحدي: 4 قطع، كل قطعة تمر بـ3 مراحل زمن كل مرحلة 2 دقيقة. الزمن الكلي بالحركة التتابعية والمتوازية على الترتيب؟', o: ['24 و 12 دقيقة', '12 و 24 دقيقة', '24 و 24 دقيقة', '8 و 6 دقائق'], a: 0, e: 'تتابعية: 4 × (2+2+2) = 24. متوازية: 6 + (4−1)×2 = 12. (جرّبها بالمحاكاة!)' }
-  ]
-},
-
-/* ───────────────────────── المرحلة 6 ───────────────────────── */
-{
-  id: 6, ch: 'الفصل الرابع — ج1', name: 'مخزن الشحن', short: 'نموذج النقل',
-  intro: 'مرحبا بالمخزن! 🚚 عندنا مصانع تنتج لوحات PCB ومخازن تنتظرها. شلون نوزّع الشحنات بأقل كلفة؟ هذا هو نموذج النقل!',
-  lessons: [
-    { ic: '🚛', t: 'نموذج النقل شنو؟',
-      b: `عندك مصنعين يسوّون شاشات و3 مخازن تحتاج شاشات. كل طريق بيها كلفة نقل مختلفة. شلون توصّل الشاشات بأرخص ثمن؟ 🤔<br><br>
-          <b>نموذج النقل (Transportation Model)</b> من أهم نماذج <b>البرمجة الخطية</b> بالمصانع. هدفه نقل البضائع من <b>مصادر العرض (Supply)</b> إلى <b>مواقع الطلب (Demand)</b> بأقل كلفة أو أقصر زمن، مع مراعاة الكميات المتاحة والمطلوبة وكلفة النقل لكل مسار.`,
-      terms: [['Transportation Model', 'نموذج النقل'], ['Supply / Demand', 'العرض / الطلب'], ['Linear Programming', 'البرمجة الخطية']] },
-    { ic: '📜', t: 'لمحة تاريخية',
-      b: `<div class="tl"><span>1941</span><b>Hitchcock</b> — توزيع المنتجات من عدة مصادر لوجهات مختلفة</div>
-          <div class="tl"><span>1947</span><b>Koopmans</b> — الاستخدام الأمثل لأنظمة النقل</div>
-          <div class="tl"><span>1951</span><b>Dantzig</b> وآخرون — طرق الحل الأمثل</div>
-          <div class="tl"><span>1954</span><b>Charnes &amp; Cooper</b> — طريقة <b>MODI</b></div>
-          <div class="tl"><span>1955</span><b>Kuhn</b> — حل مسألة التخصيص</div>
-          <div class="tl"><span>1957</span><b>Ford &amp; Fulkerson</b> — مسألة التخصيص</div>
-          <div class="tl"><span>1958</span><b>Vogel</b> — طريقة <b>VAM</b></div>
-          <div class="tl"><span>1963</span><b>Dantzig</b> — طريقة <b>Stepping-Stone</b></div>
-          <div class="tl"><span>1968</span><b>Russell</b> — طريقة <b>RAM</b></div>`,
-      tip: 'Vogel = VAM (58) • Russell = RAM (68) • Charnes = MODI (54)' },
-    { ic: '🪜', t: 'خطوتين للحل',
-      b: `شنو تسوي أول: خطة تقريبية، وبعدين تحسّنها لين تصير الأفضل 🎯<br><br>
-          <b>الخطوة 1: الحل الأساسي الأولي الممكن (I.B.F.S.)</b> بإحدى 4 طرق:<br>
-          1. <b>Northwest Corner</b> — الزاوية الشمالية الغربية<br>
-          2. <b>Least Cost</b> — الأقل كلفة<br>
-          3. <b>Vogel's Approximation (VAM)</b><br>
-          4. <b>Russell's Approximation (RAM)</b><br><br>
-          <b>الخطوة 2: اختبار وتحسين الحل للوصول للأمثل</b> بطريقتين:<br>
-          1. <b>Stepping-Stone</b><br>2. <b>MODI</b> (طريقة المضاعفات)`,
-      terms: [['Initial Basic Feasible Solution (IBFS)', 'الحل الأساسي الأولي الممكن'], ['Optimal Solution', 'الحل الأمثل']] },
-    { ic: '⚖️', t: 'توازن المسألة (Dummy)',
-      b: `لازم <b>مجموع العرض = مجموع الطلب</b>. إذا ما تساوى، تضيف <b>وجهة وهمية (Dummy)</b> بكلفة نقل <b>صفر</b>.<br><br>
-          <b>مثال 1:</b> ثلاث خزانات تجهز 15 + 20 + 25 = <b>60</b> مليون لتر، وأربع مدن تحتاج 8 + 10 + 12 + 15 = <b>45</b>. العرض أكبر، فنضيف مدينة وهمية C5 بطلب <b>60 − 45 = 15</b> وكلفة صفر.<br><br>
-          وعدد الخلايا الأساسية لازم يكون <div class="formula">m + n − 1 = 5 + 3 − 1 = 7</div>`,
-      tip: 'الفرق بين العرض والطلب = طلب الوجهة الوهمية',
-      terms: [['Dummy Destination', 'وجهة وهمية'], ['Basic Cells', 'الخلايا الأساسية']] },
-    { ic: '🧭', t: 'طريقة الزاوية الشمالية الغربية',
-      b: `تبدأ من <b>أعلى يسار الجدول</b>، تعطي الخلية أكبر كمية ممكنة، وبعدين تتحرك يمين أو لتحت. <b>لا تنظر للكلفة أبداً!</b> (مثل توزيع الحلويات من اليسار لليمين بدون ما تشوف السعر 🍬)<br><br>
-          بمثال الكتاب النتيجة: <b>T.T.C. = 143</b> ← أسوأ الطرق الأربع.<br>
-          <i>(T.T.C. = Total Transportation Cost الكلفة الكلية للنقل)</i>`,
-      terms: [['Northwest Corner Method', 'طريقة الزاوية الشمالية الغربية']] },
-    { ic: '💰', t: 'الأقل كلفة + VAM + RAM',
-      b: `💰 <b>Least Cost</b>: اختر <b>أرخص خلية</b> بالجدول وعطها أكبر كمية، وكرر. بالمثال: <b>91</b>.<br><br>
-          🎯 <b>VAM (فوغل)</b>: لكل صف وعمود احسب <b>العقوبة (Penalty)</b> = الفرق بين أصغر كلفتين. اختر الصف/العمود <b>بأكبر عقوبة</b>، وخصّص لأرخص خلية فيه. بالمثال: <b>91</b>.<br><br>
-          🏆 <b>RAM (رسل)</b>: بالمثال طلع <b>80</b> — وهو الأفضل.<br><br>
-          <b>الترتيب:</b> RAM (80) ← Least Cost = VAM (91) ← Northwest (143)<br>
-          RAM تعتبر الأفضل عموماً، وبعدها VAM.`,
-      tip: 'NW 143 ✖ | LC 91 | VAM 91 | RAM 80 ✔',
-      terms: [['Least Cost Method', 'طريقة الأقل كلفة'], ['Vogel\'s Approximation (VAM)', 'طريقة فوغل التقريبية'], ['Penalty Cost', 'كلفة العقوبة']] },
-    { ic: '🧗', t: 'تحسين الحل: Stepping-Stone',
-      b: `نحسّن الحل الأولي خطوة خطوة:<br><br>
-          1️⃣ <b>المتغير الداخل (Entering)</b>: الخلية ذات <b>أكثر قيمة سالبة</b>.<br>
-          2️⃣ ارسم <b>مسار مغلق (Loop)</b> من الخلية الداخلة، والإشارات تتبادل: ( + ) ( − ) ( + ) ( − ).<br>
-          3️⃣ <b>المتغير الخارج (Leaving)</b>: من الخلايا ذات الإشارة السالبة، اختر <b>أصغر كمية</b>.<br>
-          4️⃣ حدّث الجدول وكرر لين <b>ما يبقى أي قيمة سالبة</b> ← الحل أمثل ✅<br><br>
-          بالمثال: VAM (91) ← 85 ← <b>80 (الأمثل)</b>.<br>
-          الحل الأمثل: الخزان 1 يجهز مدينة 1 بـ8، الخزان 2 يجهز مدينة 4 بـ15، الخزان 3 يجهز مدينة 2 بـ10 ومدينة 3 بـ12.`,
-      tip: 'داخل = أكثر سالب • خارج = أصغر كمية بالسالب • أمثل = ما بقى سالب',
-      terms: [['Stepping-Stone Method', 'طريقة حجر العبور'], ['Entering / Leaving Variable', 'المتغير الداخل / الخارج'], ['MODI Method', 'طريقة المضاعفات']] }
-  ],
-  train: [{ type: 'sim', sim: 'transport', title: 'اشحن بأرخص كلفة!' }],
-  quiz: [
-    { q: 'هدف نموذج النقل هو…', o: ['زيادة كميات المخزون', 'نقل البضائع من المصادر للوجهات بأقل كلفة أو أقصر زمن', 'تقليل عدد المصانع', 'رفع أسعار النقل'], a: 1, e: 'ينقل من مصادر العرض لمواقع الطلب بأقل كلفة/زمن مراعياً الكميات وكلف المسارات.' },
-    { q: 'أي من التالي ليس من طرق إيجاد الحل الأساسي الأولي (I.B.F.S.)؟', o: ['Northwest Corner', 'Least Cost', 'VAM', 'الطريقة المجرية (Hungarian)'], a: 3, e: 'الطريقة المجرية تُستخدم لمسألة التخصيص، مو للحل الأولي بالنقل.' },
-    { q: 'العرض = 60 والطلب = 45. شنو نسوي؟', o: ['نتجاهل الفرق', 'نضيف وجهة وهمية بطلب 15 وكلفة صفر', 'نضيف مصدر وهمي بكلفة عالية', 'نلغي أرخص مسار'], a: 1, e: 'العرض أكبر ← وجهة وهمية بطلب 60−45=15 وكلفة نقل صفر.' },
-    { q: '3 مصادر و5 وجهات (مع الوهمية). عدد الخلايا الأساسية = ؟', o: ['5', '6', '7', '8'], a: 2, e: 'm + n − 1 = 5 + 3 − 1 = 7.' },
-    { q: 'أي طريقة لا تنظر لكلف النقل أبداً عند التخصيص؟', o: ['Northwest Corner', 'Least Cost', 'VAM', 'RAM'], a: 0, e: 'الزاوية الشمالية الغربية تبدأ من أعلى اليسار بغض النظر عن الكلفة.' },
-    { q: 'بمثال الكتاب أعطت أي طريقة أفضل كلفة (80)؟', o: ['Northwest Corner', 'Least Cost', 'VAM', 'RAM'], a: 3, e: 'RAM = 80، VAM = Least Cost = 91، Northwest = 143.' },
-    { q: 'VAM تعتمد على…', o: ['أقرب خلية للزاوية', 'العقوبة (الفرق بين أقل كلفتين بكل صف وعمود)', 'أكبر كمية عرض', 'ترتيب المصادر أبجدياً'], a: 1, e: 'الـPenalty = الفرق بين أصغر كلفتين، وتخصّص حيث العقوبة الأكبر.' },
-    { q: 'بطريقة Stepping-Stone، المتغير الداخل هو…', o: ['الخلية ذات أكبر قيمة موجبة', 'الخلية ذات أكثر قيمة سالبة', 'أول خلية بالجدول', 'الخلية الأرخص كلفة'], a: 1, e: 'الداخل = أكثر قيمة سالبة.' },
-    { q: 'كيف نحدد المتغير الخارج؟', o: ['أكبر كمية بالمسار', 'أصغر كمية من الخلايا ذات الإشارة السالبة بالمسار المغلق', 'الخلية الأخيرة', 'عشوائياً'], a: 1, e: 'من خلايا الإشارة (−) نختار الأصغر كمية.' },
-    { q: 'متى نعرف أن الحل أمثل؟', o: ['عند تساوي الصفوف والأعمدة', 'عندما لا تبقى قيم سالبة', 'بعد تكرار خطوة واحدة', 'عندما تزيد الكلفة'], a: 1, e: 'لا قيم سالبة متبقية ← الحل الأمثل.' }
-  ]
-},
-
-/* ───────────────────────── المرحلة 7 ───────────────────────── */
-{
-  id: 7, ch: 'الفصل الرابع — ج2', name: 'غرفة التوزيع', short: 'نموذج التخصيص',
-  intro: 'آخر محطة قبل الزعيم! 🧩 عندنا مهمات ومكائن، وكل مكينة تسوي كل مهمة بكلفة مختلفة. نريد نعطي كل مهمة للمكينة الأنسب. اسمها: نموذج التخصيص!',
-  lessons: [
-    { ic: '🎯', t: 'نموذج التخصيص (Assignment)',
-      b: `عندك <b>4 مهام</b> و<b>4 مكائن</b>، وكل مكينة تسوي كل مهمة بوقت وكلفة مختلفة. تريد تعطي كل مهمة <b>لمكينة وحدة فقط</b> بأقل كلفة ⚙️<br><br>
-          هو <b>حالة خاصة من نموذج النقل</b>: نوزّع مجموعة <b>مهام (Jobs)</b> على <b>مكائن/موارد</b>. الموارد تختلف بالكلفة أو الزمن أو الربح أو الكفاءة.<br>
-          <b>الهدف:</b> أقل كلفة/زمن، أو أعلى ربح/كفاءة.`,
-      terms: [['Assignment Model', 'نموذج التخصيص'], ['Jobs / Machines', 'المهام / المكائن']] },
-    { ic: '⚖️', t: 'الشرط الأساسي: المصفوفة متوازنة',
-      b: `لازم <b>n = m</b> (عدد المهام = عدد المكائن).<br><br>
-          • إذا <b>n &gt; m</b> ← أضف <b>(n − m)</b> مكائن وهمية.<br>
-          • إذا <b>n &lt; m</b> ← أضف <b>(m − n)</b> مهام وهمية.<br>
-          وقيم الكلفة/الزمن/الربح للوهمي = <b>صفر</b>.<br><br>
-          <b>مثال 2:</b> 4 مهام و5 مكائن ← نضيف مهمة وهمية J5 بكلفة صفر.`,
-      tip: 'وهمية = صفر، والمكينة اللي تأخذ الوهمية تبقى بدون شغل' },
-    { ic: '🇭🇺', t: 'الطريقة المجرية (Hungarian Method)',
-      b: `1️⃣ اطرح <b>أصغر قيمة بكل صف</b> من صفّه.<br>
-          2️⃣ اطرح <b>أصغر قيمة بكل عمود</b> من عموده.<br>
-          3️⃣ غطّي كل الأصفار بـ<b>أقل عدد خطوط</b> (أفقية/عمودية).<br>
-          4️⃣ إذا <b>عدد الخطوط = n</b> ← الحل أمثل، خصّص على الأصفار (كل صف وعمود مرة وحدة).<br>
-          5️⃣ إذا أقل من n: اطرح <b>أصغر قيمة غير مغطاة</b> من كل العناصر غير المغطاة، وأضفها <b>لتقاطعات الخطوط</b>، وكرر من 3.`,
-      tip: 'طرح صفوف ← طرح أعمدة ← خطوط ← (خطوط = n؟) خصّص',
-      terms: [['Hungarian Method', 'الطريقة المجرية']] },
-    { ic: '🧮', t: 'مثال 2 محلولاً (تقليل الكلفة)',
-      b: `بعد التوازن، الطرح، وتعديل الخطوط، التخصيص الأمثل:<br><br>
-          • J1 ← M4 بكلفة <b>2</b><br>• J2 ← M1 بكلفة <b>7</b><br>• J3 ← M2 بكلفة <b>6</b><br>• J4 ← M5 بكلفة <b>7</b><br><br>
-          <div class="formula">Total Cost = 2 + 7 + 6 + 7 = <b>22</b></div>
-          والمكينة <b>M3 بقت بدون تخصيص</b> (لأنها ذهبت للمهمة الوهمية).`,
-      terms: [['Dummy Job', 'مهمة وهمية']] },
-    { ic: '📈', t: 'مثال 3: تعظيم الربح',
-      b: `إذا المطلوب <b>أكبر ربح</b> نحوّل المسألة لتقليل: <b>اطرح كل عناصر المصفوفة من أكبر قيمة فيها</b> (بالمثال 10)، وبعدها نكمل بالطريقة المجرية عادي.<br><br>
-          بالمثال طلعت <b>4 تخصيصات مثلى</b> كلها تعطي <b>أقصى ربح = 22</b> وحدة نقدية.<br>
-          (يعني ممكن يكون عدة حلول مثلى بنفس القيمة).`,
-      tip: 'تعظيم؟ اطرح الكل من أكبر قيمة وتحول لتقليل',
-      terms: [['Maximization → Minimization', 'تحويل التعظيم إلى تقليل']] }
-  ],
-  train: [{ type: 'sim', sim: 'assign', title: 'وزّع المهام على المكائن' }],
-  quiz: [
-    { q: 'نموذج التخصيص هو حالة خاصة من…', o: ['نموذج الخزين', 'نموذج النقل', 'نموذج الاستبدال', 'تحليل ماركوف'], a: 1, e: 'التخصيص = حالة خاصة من مسألة النقل.' },
-    { q: 'الشرط الأساسي لمصفوفة التخصيص:', o: ['n > m', 'n < m', 'n = m (متوازنة)', 'لا شرط'], a: 2, e: 'عدد المهام = عدد المكائن.' },
-    { q: '4 مهام و6 مكائن. شنو نضيف؟', o: ['مهمتين وهميتين', 'مكينتين وهميتين', 'مهمة واحدة', 'ما نضيف شي'], a: 0, e: 'n < m ← نضيف (m − n) = 2 مهمة وهمية.' },
-    { q: 'قيم الكلفة للمهام أو المكائن الوهمية تكون…', o: ['كبيرة جداً', 'صفر', 'متوسط القيم', 'سالبة'], a: 1, e: 'قيم الوهمي = صفر.' },
-    { q: 'أشهر طريقة لحل مسائل التخصيص:', o: ['Northwest Corner', 'VAM', 'الطريقة المجرية (Hungarian)', 'MODI'], a: 2, e: 'الطريقة المجرية.' },
-    { q: 'لحل مسألة تعظيم الربح بالطريقة المجرية:', o: ['نحذف الصفوف', 'نطرح كل العناصر من أكبر قيمة لنحوّلها إلى تقليل', 'نضرب بـ(-1) فقط', 'ما نحتاج تغيير'], a: 1, e: 'نطرح عناصر المصفوفة من أكبر قيمة فيها ثم نحل كتقليل.' },
-    { q: 'متى يكون الحل أمثل بالطريقة المجرية؟', o: ['عدد الخطوط أقل من n', 'عدد الخطوط = n', 'عند وجود صفر واحد', 'بعد طرح الصفوف فقط'], a: 1, e: 'عندما يساوي أقل عدد خطوط تغطي الأصفار عدد الصفوف (n).' },
-    { q: 'بمثال الكتاب (4 مهام و5 مكائن) أقل كلفة تخصيص = ؟', o: ['20', '22', '25', '30'], a: 1, e: '2 + 7 + 6 + 7 = 22، وM3 بقت بدون تخصيص.' }
-  ]
-}
+// Map Legend: 
+// 0 = Empty, 1 = Wall, 2 = Rhythm A (active on beat 0), 3 = Rhythm B (active on beat 1)
+const levelMap = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Y=0 (Finish Line region)
+    [0, 1, 0, 2, 0, 0, 3, 0, 1, 0],
+    [0, 1, 0, 3, 0, 0, 2, 0, 1, 0],
+    [0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+    [0, 2, 3, 0, 0, 0, 0, 3, 2, 0],
+    [0, 3, 2, 0, 1, 1, 0, 2, 3, 0],
+    [0, 0, 0, 0, 2, 3, 0, 0, 0, 0],
+    [0, 1, 1, 0, 0, 0, 0, 1, 1, 0],
+    [0, 0, 0, 3, 0, 0, 2, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // Y=9 (Start region)
 ];
 
-/* ───────── المرحلة الأخيرة: زعيم اللعبة (يسحب أسئلة عشوائية من كل المراحل) ───────── */
-const BOSS = {
-  id: 8, ch: 'الاختبار النهائي', name: 'برج المدير العام', short: 'معركة الزعيم',
-  intro: 'وصلت لبرج المدير العام 👑! هذا اختبار شامل من كل الفصول. عندك 4 قلوب… وكل غلطة تخسر قلب. إذا نجحت تصير «مدير المصنع» الرسمي!',
-  boss: true, hearts: 4, count: 12
+// Entities
+let playerRed = { logicalX: 2, logicalY: 9, visualX: 2, visualY: 9, color: '#FF4444' };
+let playerBlue = { logicalX: 7, logicalY: 9, visualX: 7, visualY: 9, color: '#4444FF' };
+const goalRed = { x: 2, y: 0 };
+const goalBlue = { x: 7, y: 0 };
+
+let particles = [];
+
+// Audio Context (Synthesizer)
+let audioCtx = null;
+let isAudioEnabled = false;
+
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        isAudioEnabled = true;
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+function playSound(type) {
+    if (!isAudioEnabled || !audioCtx) return;
+    
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    const now = audioCtx.currentTime;
+    
+    if (type === 'move') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+        gainNode.gain.setValueAtTime(0.1, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+    } else if (type === 'beatA') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(150, now);
+        gainNode.gain.setValueAtTime(0.05, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+    } else if (type === 'beatB') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(200, now);
+        gainNode.gain.setValueAtTime(0.05, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+    } else if (type === 'crash') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 0.3);
+        gainNode.gain.setValueAtTime(0.2, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+    } else if (type === 'win') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.setValueAtTime(554, now + 0.1); // C#
+        osc.frequency.setValueAtTime(659, now + 0.2); // E
+        osc.frequency.setValueAtTime(880, now + 0.3); // A
+        gainNode.gain.setValueAtTime(0.1, now);
+        gainNode.gain.linearRampToValueAtTime(0, now + 0.6);
+        osc.start(now);
+        osc.stop(now + 0.6);
+    }
+}
+
+// Sizing logic
+function resize() {
+    const maxWidth = window.innerWidth * 0.9;
+    const maxHeight = window.innerHeight * 0.55; // Leave room for title and dpad
+    canvasSize = Math.min(maxWidth, maxHeight, 500); // Max 500px square
+    
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
+    cellSize = canvasSize / GRID_SIZE;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Game Reset
+function resetGame() {
+    playerRed.logicalX = 2; playerRed.logicalY = 9;
+    playerRed.visualX = 2; playerRed.visualY = 9;
+    playerBlue.logicalX = 7; playerBlue.logicalY = 9;
+    playerBlue.visualX = 7; playerBlue.visualY = 9;
+    
+    gameState = 'PLAYING';
+    rhythmBeat = 0;
+    lastBeatTime = performance.now();
+    particles = [];
+    
+    uiLayer.classList.add('hidden');
+}
+
+function endGame(won) {
+    gameState = won ? 'WIN' : 'GAMEOVER';
+    playSound(won ? 'win' : 'crash');
+    
+    if (won) {
+        createWinParticles();
+        uiTitle.innerText = "MASTERED!";
+        uiTitle.className = "text-4xl font-bold mb-2 neon-text-white";
+        uiSubtitle.innerText = "Perfect synchronization.";
+    } else {
+        uiTitle.innerText = "SHATTERED";
+        uiTitle.className = "text-4xl font-bold mb-2 neon-text-red";
+        uiSubtitle.innerText = "You hit a barrier. Timing is key.";
+    }
+    
+    setTimeout(() => {
+        uiLayer.classList.remove('hidden');
+        startBtn.innerText = "TRY AGAIN";
+    }, 1000);
+}
+
+// Movement Logic
+function movePlayers(dx, dy) {
+    if (gameState !== 'PLAYING') return;
+
+    let redTargetX = playerRed.logicalX + dx;
+    let redTargetY = playerRed.logicalY + dy;
+    let blueTargetX = playerBlue.logicalX + dx;
+    let blueTargetY = playerBlue.logicalY + dy;
+
+    // Bounds checking
+    if (redTargetX < 0 || redTargetX >= GRID_SIZE || redTargetY < 0 || redTargetY >= GRID_SIZE) {
+        redTargetX = playerRed.logicalX; redTargetY = playerRed.logicalY;
+    }
+    if (blueTargetX < 0 || blueTargetX >= GRID_SIZE || blueTargetY < 0 || blueTargetY >= GRID_SIZE) {
+        blueTargetX = playerBlue.logicalX; blueTargetY = playerBlue.logicalY;
+    }
+
+    // Static Wall checking
+    if (levelMap[redTargetY][redTargetX] === 1) { redTargetX = playerRed.logicalX; redTargetY = playerRed.logicalY; }
+    if (levelMap[blueTargetY][blueTargetX] === 1) { blueTargetX = playerBlue.logicalX; blueTargetY = playerBlue.logicalY; }
+
+    // Update logical positions
+    let moved = false;
+    if (redTargetX !== playerRed.logicalX || redTargetY !== playerRed.logicalY) {
+        playerRed.logicalX = redTargetX; playerRed.logicalY = redTargetY;
+        moved = true;
+    }
+    if (blueTargetX !== playerBlue.logicalX || blueTargetY !== playerBlue.logicalY) {
+        playerBlue.logicalX = blueTargetX; playerBlue.logicalY = blueTargetY;
+        moved = true;
+    }
+
+    if (moved) {
+        playSound('move');
+        checkCollisions(); // Check immediately on move
+    }
+}
+
+function checkCollisions() {
+    if (gameState !== 'PLAYING') return;
+    
+    // Check if current tile is an active rhythm barrier
+    const redTile = levelMap[playerRed.logicalY][playerRed.logicalX];
+    const blueTile = levelMap[playerBlue.logicalY][playerBlue.logicalX];
+    
+    const activeBarrierType = rhythmBeat === 0 ? 2 : 3;
+    
+    if (redTile === activeBarrierType || blueTile === activeBarrierType) {
+        endGame(false);
+    }
+    
+    // Check Win
+    if (playerRed.logicalX === goalRed.x && playerRed.logicalY === goalRed.y &&
+        playerBlue.logicalX === goalBlue.x && playerBlue.logicalY === goalBlue.y) {
+        endGame(true);
+    }
+}
+
+// Particle System
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.vx = (Math.random() - 0.5) * 10;
+        this.vy = (Math.random() - 0.5) * 10;
+        this.life = 1.0;
+        this.decay = Math.random() * 0.02 + 0.02;
+        this.size = Math.random() * 4 + 2;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life -= this.decay;
+    }
+    draw(ctx) {
+        ctx.globalAlpha = Math.max(0, this.life);
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 0;
+    }
+}
+
+function createWinParticles() {
+    const rx = (goalRed.x + 0.5) * cellSize;
+    const ry = (goalRed.y + 0.5) * cellSize;
+    const bx = (goalBlue.x + 0.5) * cellSize;
+    const by = (goalBlue.y + 0.5) * cellSize;
+
+    for (let i = 0; i < 40; i++) {
+        particles.push(new Particle(rx, ry, '#FF4444'));
+        particles.push(new Particle(bx, by, '#4444FF'));
+    }
+}
+
+// Main Loop
+let lastTime = 0;
+function gameLoop(timestamp) {
+    const deltaTime = timestamp - lastTime;
+    lastTime = timestamp;
+
+    update(timestamp);
+    draw();
+
+    requestAnimationFrame(gameLoop);
+}
+
+function update(timestamp) {
+    if (gameState === 'PLAYING') {
+        // Rhythm Logic
+        if (timestamp - lastBeatTime > BEAT_INTERVAL) {
+            rhythmBeat = (rhythmBeat + 1) % 2;
+            lastBeatTime = timestamp;
+            playSound(rhythmBeat === 0 ? 'beatA' : 'beatB');
+            checkCollisions(); // Check if barrier spawned on player
+        }
+
+        // Interpolate visual positions for smooth movement
+        const lerpSpeed = 0.3;
+        playerRed.visualX += (playerRed.logicalX - playerRed.visualX) * lerpSpeed;
+        playerRed.visualY += (playerRed.logicalY - playerRed.visualY) * lerpSpeed;
+        playerBlue.visualX += (playerBlue.logicalX - playerBlue.visualX) * lerpSpeed;
+        playerBlue.visualY += (playerBlue.logicalY - playerBlue.visualY) * lerpSpeed;
+    }
+
+    // Update particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        if (particles[i].life <= 0) {
+            particles.splice(i, 1);
+        }
+    }
+}
+
+function draw() {
+    // Clear canvas
+    ctx.fillStyle = '#1A1A1A';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Grid Lines (Subtle)
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= GRID_SIZE; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * cellSize, 0);
+        ctx.lineTo(i * cellSize, canvas.height);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, i * cellSize);
+        ctx.lineTo(canvas.width, i * cellSize);
+        ctx.stroke();
+    }
+
+    // Draw Goals
+    drawGoal(goalRed.x, goalRed.y, '#FF4444');
+    drawGoal(goalBlue.x, goalBlue.y, '#4444FF');
+
+    // Draw Map / Barriers
+    for (let y = 0; y < GRID_SIZE; y++) {
+        for (let x = 0; x < GRID_SIZE; x++) {
+            const tile = levelMap[y][x];
+            if (tile === 1) {
+                // Static Wall
+                ctx.fillStyle = '#555';
+                ctx.fillRect(x * cellSize + 2, y * cellSize + 2, cellSize - 4, cellSize - 4);
+            } else if (tile === 2) {
+                // Rhythm A
+                drawBarrier(x, y, '#FFFF00', rhythmBeat === 0);
+            } else if (tile === 3) {
+                // Rhythm B
+                drawBarrier(x, y, '#00FFFF', rhythmBeat === 1);
+            }
+        }
+    }
+
+    // Draw Players
+    if (gameState !== 'GAMEOVER' || rhythmBeat % 2 === 0) { // Blink if dead
+        drawPlayer(playerRed.visualX, playerRed.visualY, playerRed.color);
+        drawPlayer(playerBlue.visualX, playerBlue.visualY, playerBlue.color);
+    }
+
+    // Draw Particles
+    particles.forEach(p => p.draw(ctx));
+    
+    // Rhythm Indicator Ring at center
+    if (gameState === 'PLAYING') {
+        const progress = (performance.now() - lastBeatTime) / BEAT_INTERVAL;
+        const radius = (canvas.width / 2) * (1 - progress);
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = rhythmBeat === 0 ? 'rgba(255, 255, 0, 0.1)' : 'rgba(0, 255, 255, 0.1)';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+    }
+}
+
+function drawGoal(x, y, color) {
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = color;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(x * cellSize + 5, y * cellSize + 5, cellSize - 10, cellSize - 10);
+    
+    // Inner text "FINISH" placeholder
+    ctx.fillStyle = color;
+    ctx.font = `${cellSize*0.2}px Orbitron`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("GOAL", x * cellSize + cellSize/2, y * cellSize + cellSize/2);
+    ctx.shadowBlur = 0;
+}
+
+function drawBarrier(x, y, color, isActive) {
+    const pad = 4;
+    if (isActive) {
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = color;
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.8;
+        ctx.fillRect(x * cellSize + pad, y * cellSize + pad, cellSize - pad*2, cellSize - pad*2);
+        ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 0;
+    } else {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.2;
+        ctx.strokeRect(x * cellSize + pad, y * cellSize + pad, cellSize - pad*2, cellSize - pad*2);
+        ctx.globalAlpha = 1.0;
+    }
+}
+
+function drawPlayer(vx, vy, color) {
+    const cx = vx * cellSize + cellSize / 2;
+    const cy = vy * cellSize + cellSize / 2;
+    const radius = cellSize * 0.35;
+
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = color;
+    ctx.fillStyle = color;
+    
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Inner highlight
+    ctx.fillStyle = '#FFF';
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    ctx.arc(cx - radius*0.3, cy - radius*0.3, radius*0.3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.globalAlpha = 1.0;
+    ctx.shadowBlur = 0;
+}
+
+// Input Handling
+startBtn.addEventListener('click', () => {
+    initAudio();
+    resetGame();
+});
+
+function handleInput(dir) {
+    if (gameState !== 'PLAYING') return;
+    switch(dir) {
+        case 'UP': movePlayers(0, -1); break;
+        case 'DOWN': movePlayers(0, 1); break;
+        case 'LEFT': movePlayers(-1, 0); break;
+        case 'RIGHT': movePlayers(1, 0); break;
+    }
+}
+
+// Keyboard
+window.addEventListener('keydown', (e) => {
+    if (['ArrowUp', 'w', 'W'].includes(e.key)) handleInput('UP');
+    if (['ArrowDown', 's', 'S'].includes(e.key)) handleInput('DOWN');
+    if (['ArrowLeft', 'a', 'A'].includes(e.key)) handleInput('LEFT');
+    if (['ArrowRight', 'd', 'D'].includes(e.key)) handleInput('RIGHT');
+});
+
+// Mobile D-Pad
+const bindBtn = (id, dir) => {
+    const btn = document.getElementById(id);
+    const trigger = (e) => {
+        e.preventDefault();
+        handleInput(dir);
+    };
+    btn.addEventListener('touchstart', trigger, {passive: false});
+    btn.addEventListener('mousedown', trigger);
 };
 
-/* ───────── قاموس المصطلحات ───────── */
-const GLOSSARY = [
-  ['Industrial Enterprise', 'منشأة صناعية', 'المصنع أو الشركة التي تقوم بالتصنيع.'],
-  ['Automation Level', 'مستوى الأتمتة', 'مدى اعتماد العملية على المكائن بدل الجهد اليدوي.'],
-  ['Feasibility Studies', 'دراسات الجدوى', 'دراسة فنية واقتصادية لمعرفة نجاح المشروع قبل بدئه.'],
-  ['Standard Time', 'الوقت القياسي', 'الوقت المحدد علمياً لإنجاز وحدة إنتاج واحدة.'],
-  ['Work Study', 'دراسة العمل', 'دراسة الحركة والوقت لرفع كفاءة الأداء.'],
-  ['Incentive Systems', 'نظم الحوافز', 'مكافآت للعاملين عند زيادة الإنتاجية.'],
-  ['Division of Labor', 'تقسيم العمل', 'تجزئة العملية التصنيعية إلى خطوات بسيطة متتالية.'],
-  ['Skill Specialization', 'التخصص المهاري', 'ربط الأجر بمستوى مهارة العامل ومهامه.'],
-  ['Scientific Management', 'الإدارة العلمية', 'اتخاذ القرارات الإدارية بناءً على البيانات والبحث العلمي.'],
-  ['Optimization Science', 'علم الأمثلية', 'استخدام الرياضيات للوصول للخيار الأفضل (أعلى ربح أو أقل كلفة).'],
-  ['Operations Research (OR)', 'بحوث العمليات', 'أساليب كمية ورياضية لاتخاذ القرارات المعقدة.'],
-  ['Linear Programming', 'البرمجة الخطية', 'أسلوب رياضي لتخصيص الموارد بأفضل شكل.'],
-  ['Dynamic Programming', 'البرمجة الديناميكية', 'قرارات متتالية ومتداخلة لتخطيط الإنتاج.'],
-  ['Sequencing', 'التتابع', 'تحديد أفضل ترتيب لمراحل التصنيع أو التجميع.'],
-  ['Queuing Theory', 'نظرية صفوف الانتظار', 'حساب زمن الخدمة والانتظار لأفضل خدمة بأقل كلفة.'],
-  ['Input-Output Analysis', 'تحليل المدخلات والمخرجات', 'تحليل التوازن بين الموارد المستخدمة والمنتجات الناتجة.'],
-  ['Benefit-Cost Analysis', 'تحليل المنافع والتكاليف', 'مقارنة المردود المالي بالكلفة الكلية.'],
-  ['Inventory Models', 'نماذج الخزين', 'تحديد الكمية الاقتصادية للشراء ومستوى الخزين الاحتياطي.'],
-  ['Replacement Models', 'نماذج الإحلال والاستبدال', 'تحديد الوقت المناسب لاستبدال المكائن لتقليل كلفة الصيانة.'],
-  ['Systems Perspective', 'منظور النظم', 'النظرة الشاملة التي تربط (المواد، المكائن، العمل).'],
-  ['Organizational Structure', 'الهيكل التنظيمي', 'توزيع المسؤوليات والخطوط الإدارية داخل المنشأة.'],
-  ['Directing & Coordinating', 'التوجيه والتنسيق', 'قيادة فريق العمل والربط بين الأقسام.'],
-  ['Workforce Development', 'تنمية القوى العاملة', 'تدريب العمال لرفع مهاراتهم.'],
-  ['Hierarchy of Needs', 'هرم الحاجات', 'نظرية ماسلو في ترتيب حاجات العامل.'],
-  ['Human Relations', 'العلاقات الإنسانية', 'التعامل مع بيئة العمل نفسياً واجتماعياً لرفع المعنويات.'],
-  ['Trial-and-Error Approach', 'أسلوب التجربة والخطأ', 'إدارة تقليدية عشوائية غير قائمة على أسس علمية.'],
-  ['Manufacturing Costs', 'تكاليف التصنيع', 'المبالغ المصروفة لإنتاج السلعة.'],
-  ['Cost Accounting', 'محاسبة التكاليف', 'نظم إحصائية لحساب وتتبع كلفة كل مرحلة إنتاجية.'],
-  ['Living Standards', 'مستويات المعيشة', 'القدرة الشرائية للسكان التي تؤثر على حجم الطلب.'],
-  ['Competitive Advantage', 'الميزة التنافسية', 'تفوق المصنع على منافسيه بالسعر أو الجودة.'],
-  ['Resource Waste', 'هدر الموارد', 'ضياع المواد الأولية أو الطاقات دون فائدة إنتاجية.'],
-  ['Returns on Investment', 'العائد على الاستثمار', 'أرباح المشروع مقارنة برأس المال المستثمر.'],
-  ['Production Capacity', 'الطاقة الإنتاجية', 'الحد الأقصى الذي يستطيع المصنع/المكائن إنتاجه.'],
-  ['Material Handling', 'مناولة المواد', 'طرق نقل وتحريك المواد والمنتجات داخل المصنع.'],
-  ['Therbligs', 'الحركات الأساسية (17)', 'الحركات التي قسّمها جلبرث لتحليل حركة العامل.'],
-  ['Quality Control & Inspection', 'ضبط الجودة والفحص', 'التأكد من مطابقة المنتج للمواصفات ومنع العيوب.'],
-  ['Vocational Training', 'التدريب المهني', 'إكساب العمال المهارات الفنية لتشغيل الآلات.'],
-  ['Industrial Safety', 'الأمان الصناعي', 'شروط العمل التي تحمي العمال من الحوادث.'],
-  ['Decision Theory', 'نظرية اتخاذ القرار', 'اختيار القرار الأفضل في حالات التأكد أو المخاطرة.'],
-  ['Game Theory', 'نظرية المباراة', 'تحليل القرارات بوجود منافسين.'],
-  ['Network Analysis (PERT/CPM)', 'تحليل المخططات الشبكية', 'تخطيط المشاريع الكبيرة لمعرفة الزمن الحرج.'],
-  ['Markov Analysis', 'تحليل ماركوف', 'التنبؤ بسلوك الخزين والمبيعات من حالات سابقة.'],
-  ['Resource Allocation', 'تخصيص الموارد', 'توزيع العمال والمكائن والمواد على الأعمال بأفضل طريقة.'],
-  ['Fixed Costs (FC)', 'الكلف الثابتة', 'لا تتغير بتغير حجم الإنتاج (اندثار، تأمين، رواتب إدارية).'],
-  ['Variable Costs (VC)', 'الكلف المتغيرة', 'تتغير مع حجم الإنتاج (مواد أولية، أجور خط الإنتاج).'],
-  ['Break-Even Point (BEP)', 'نقطة التعادل', 'نقطة تساوي الإيراد الكلي والكلفة الكلية (لا ربح ولا خسارة).'],
-  ['Margin of Safety', 'حد الأمان', '(المبيعات الفعلية − قيمة التعادل) ÷ المبيعات الفعلية.'],
-  ['Payback Period', 'مدة استرداد رأس المال', 'رأس المال ÷ (الربح السنوي + الاندثار).'],
-  ['Span of Control', 'نطاق الإشراف', 'عدد الموظفين الذين يستطيع المدير الإشراف عليهم بفعالية.'],
-  ['Production Cycle (T)', 'دورة الإنتاج', 'T = زمن التهيئة T1 + زمن التشغيل T2.'],
-  ['Product / Functional / Hybrid / Fixed Layout', 'أنواع التخطيط', 'منتج (خط) • وظيفي (أقسام) • مختلط • موقع ثابت.'],
-  ['I.B.F.S.', 'الحل الأساسي الأولي', 'حل أولي ممكن لمسألة النقل (NW, LC, VAM, RAM).'],
-  ['Hungarian Method', 'الطريقة المجرية', 'أشهر طريقة لحل مسائل التخصيص.']
-];
+bindBtn('btn-up', 'UP');
+bindBtn('btn-down', 'DOWN');
+bindBtn('btn-left', 'LEFT');
+bindBtn('btn-right', 'RIGHT');
 
-/* ───────────── أدوات عامة ───────────── */
-const KEY = 'chipisland_v1';
-const $ = (s, r = document) => r.querySelector(s);
-function h(tag, attrs = {}, ...kids) {
-  const e = document.createElement(tag);
-  for (const k in attrs) {
-    const v = attrs[k];
-    if (k === 'class') e.className = v;
-    else if (k === 'html') e.innerHTML = v;
-    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
-    else if (v !== false && v != null) e.setAttribute(k, v);
-  }
-  kids.flat().forEach(c => { if (c == null || c === false) return; e.append(c.nodeType ? c : document.createTextNode(c)); });
-  return e;
-}
-const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const fmt = n => Math.round(n).toLocaleString('en-US');
-const ALL = LEVELS.concat([BOSS]);
+// Start Loop
+requestAnimationFrame(gameLoop);
 
-/* ───────────── الصور (بكسل) ───────────── */
-const PAL = ['#1a1c2c', '#5d275d', '#b13e53', '#ef7d57', '#ffcd75', '#a7f070', '#38b764', '#257179', '#29366f', '#3b5dc9', '#41a6f6', '#73eff7', '#f4f4f4', '#94b0c2', '#566c86', '#333c57'];
-const SPR = {
-  hero: ['....3333....', '...333333...', '..33333333..', '.3333333333.', '..44444444..', '..40444404..', '..44444444..', '...444444...', '....4444....', '..99999999..', '.9959999599.', '.4959999594.', '.4999999994.', '..99999999..', '..99....99..', '..ff....ff..'],
-  robot: ['.....22.....', '.....dd.....', '..dddddddd..', '.dccccccccd.', '.dcbb00bbcd.', '.dcbb00bbcd.', '.dccccccccd.', '.dc0cccc0cd.', '.dcc0000ccd.', '..dddddddd..', '..eeeeeeee..', '.deecbbceed.', '.de.eeee.ed.', '..ee....ee..'],
-  heart: ['.22.22.', '2332222', '2222222', '.22222.', '..222..', '...2...'],
-  heartE: ['.ee.ee.', 'eeeeeee', 'eeeeeee', '.eeeee.', '..eee..', '...e...'],
-  coin: ['..3333..', '.344443.', '34455443', '34454443', '34454443', '34444443', '.344443.', '..3333..'],
-  star: ['....4....', '...444...', '...444...', '444444444', '.4444444.', '..44444..', '..44.44..', '.44...44.', '.4.....4.'],
-  lock: ['..dddd..', '.d....d.', '.d....d.', 'eeeeeeee', 'eeee0eee', 'eeee0eee', 'eeeeeeee', 'eeeeeeee'],
-  check: ['......66', '.....666', '6...666.', '66.666..', '.6666...', '..66....', '........', '........'],
-  gear: ['...dd...', '.d.dd.d.', '..dddd..', 'ddd00ddd', 'ddd00ddd', '..dddd..', '.d.dd.d.', '...dd...'],
-  clock: ['..cccc..', '.cc00cc.', 'cc.0.ccc', 'c..0...c', 'c..000.c', 'cc....cc', '.cccccc.', '..cccc..'],
-  org: ['...cc...', '...cc...', '.cccccc.', '..c..c..', 'cc.cc.cc', 'cc.cc.cc', '........', '........'],
-  chip: ['.d.d.d.d', 'ffffffff', 'fcc00ccf', 'dc0000cd', 'dc0000cd', 'fcc00ccf', 'ffffffff', '.d.d.d.d'],
-  box: ['..4444..', '.443344.', '44433344', '44433344', '44444444', '33333333', '33333333', '33333333'],
-  grid: ['cccccccc', 'c0cc0ccc', 'cc0cc0cc', 'c0cc0ccc', 'cc0cc0cc', 'c0cc0ccc', 'cc0cc0cc', 'cccccccc'],
-  crown: ['4..4..4.', '4..4..44', '44444444', '44244244', '44444444', '33333333', '........', '........'],
-  book: ['.cccccc.', 'cddddddc', 'cd0000dc', 'cddddddc', 'cd0000dc', 'cddddddc', 'cddddddc', '.cccccc.']
-};
-const spCache = {};
-function spriteCanvas(rows, swap) {
-  const w = rows[0].length, ht = rows.length, c = document.createElement('canvas'); c.width = w; c.height = ht;
-  const x = c.getContext('2d');
-  rows.forEach((r, j) => [...r].forEach((ch, i) => { if (ch === '.') return; if (swap && ch === '3') ch = swap; x.fillStyle = PAL[parseInt(ch, 16)]; x.fillRect(i, j, 1, 1); }));
-  return c;
-}
-function sprite(name, swap) { const k = name + (swap || ''); return spCache[k] || (spCache[k] = spriteCanvas(SPR[name], swap)); }
-function spImg(name, px = 3, swap) { const c = sprite(name, swap); const i = h('img', { class: 'px', src: c.toDataURL(), width: c.width * px, height: c.height * px, alt: '' }); return i; }
-const HEROES = ['3', '5', 'a', '2'];
-
-/* ───────────── الصوت ───────────── */
-let AC = null;
-function tone(f, d, type = 'square', v = .06, delay = 0) {
-  if (!S.sound) return;
-  try {
-    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
-    const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + delay;
-    o.type = type; o.frequency.value = f; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0001, t + d);
-    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d + .02);
-  } catch (e) { }
-}
-const SFX = {
-  click: () => tone(520, .05), ok: () => { tone(660, .09); tone(990, .12, 'square', .06, .09); },
-  bad: () => { tone(220, .14, 'sawtooth', .07); tone(150, .2, 'sawtooth', .07, .12); },
-  coin: () => { tone(988, .06); tone(1319, .14, 'square', .06, .06); },
-  win: () => { [523, 659, 784, 1047].forEach((f, i) => tone(f, .16, 'square', .06, i * .12)); },
-  step: () => tone(300, .03, 'triangle', .04)
-};
-
-/* ───────────── الحفظ والتقدم ───────────── */
-const DEF = { name: '', hero: 0, xp: 0, coins: 10, unlocked: 1, stars: {}, lessons: {}, train: {}, missed: [], pos: 0, sound: true, boss: false };
-let S = Object.assign({}, DEF);
-function load() { try { const j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j) S = Object.assign({}, DEF, j); } catch (e) { } }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { } }
-const RANKS = [[0, 'متدرب 🔧'], [100, 'فني 🛠️'], [250, 'مهندس مساعد 📐'], [450, 'مهندس 💡'], [700, 'مهندس أول 🚀'], [1000, 'مدير المصنع 👑']];
-function rankOf(xp) { let r = 0; RANKS.forEach((x, i) => { if (xp >= x[0]) r = i; }); return r; }
-function toast(msg) { const t = h('div', { class: 'toast' }, msg); document.body.append(t); setTimeout(() => t.remove(), 1950); }
-function giveXP(n, coins = 0) {
-  const before = rankOf(S.xp); S.xp += n; S.coins += coins; save(); hud();
-  if (rankOf(S.xp) > before) { SFX.win(); toast('🎉 ترقيت إلى رتبة: ' + RANKS[rankOf(S.xp)][1]); }
-}
-function totalStars() { return Object.values(S.stars).reduce((a, b) => a + b, 0); }
-
-/* ───────────── HUD ───────────── */
-function hud() {
-  const r = rankOf(S.xp), next = RANKS[r + 1], lo = RANKS[r][0], pct = next ? (S.xp - lo) / (next[0] - lo) * 100 : 100;
-  const box = $('#hud'); box.classList.toggle('hide', !S.name);
-  box.replaceChildren(
-    spImg('hero', 2, HEROES[S.hero]),
-    h('div', { class: 'me' }, h('div', { class: 'nm' }, S.name || ''), h('div', { class: 'rk' }, RANKS[r][1] + ' • ' + S.xp + ' XP'), h('div', { class: 'bar' }, h('i', { style: 'width:' + pct + '%' }))),
-    h('div', { class: 'cn' }, spImg('coin', 2), String(S.coins)),
-    h('button', { class: 'ibtn', title: 'قاموس', onclick: () => { SFX.click(); openGlossary(); } }, '📖'),
-    h('button', { class: 'ibtn', title: 'صوت', onclick: () => { S.sound = !S.sound; save(); hud(); SFX.click(); } }, S.sound ? '🔊' : '🔇'),
-    h('button', { class: 'ibtn', title: 'الخريطة', onclick: () => { SFX.click(); viewMap(); } }, '🗺️')
-  );
-}
-
-/* ───────────── عرض الشاشات ───────────── */
-let mapTimer = null, mapStop = null;
-function show(...nodes) {
-  if (mapStop) { mapStop(); mapStop = null; }
-  $('#screen').replaceChildren(...nodes); window.scrollTo(0, 0);
-}
-function confetti() {
-  const c = h('canvas', { class: 'confetti', width: 160, height: 100 }); document.body.append(c);
-  const x = c.getContext('2d'), P = [];
-  for (let i = 0; i < 90; i++) P.push({ x: Math.random() * 160, y: -Math.random() * 100, v: 0.6 + Math.random() * 1.2, c: PAL[3 + (Math.random() * 9 | 0)], s: 1 + (Math.random() * 2 | 0) });
-  let f = 0; (function loop() { x.clearRect(0, 0, 160, 100); P.forEach(p => { p.y += p.v; p.x += Math.sin((p.y + p.x) / 6) * .4; x.fillStyle = p.c; x.fillRect(p.x | 0, p.y | 0, p.s, p.s); }); if (++f < 150) requestAnimationFrame(loop); else c.remove(); })();
-}
-
-/* ───────────── شاشة البداية ───────────── */
-function viewTitle() {
-  hud();
-  const has = S.name && (S.xp > 0 || S.unlocked > 1);
-  let hero = S.hero || 0;
-  const inp = h('input', { type: 'text', maxlength: 18, placeholder: 'اكتب اسمك يا مغامر', value: S.name || '' });
-  const hbtn = HEROES.map((c, i) => h('button', { class: i === hero ? 'sel' : '', onclick: e => { hero = i; SFX.click(); hb.forEach((b, j) => b.classList.toggle('sel', j === i)); } }, spImg('hero', 4, c)));
-  const hb = hbtn;
-  const start = () => {
-    const n = inp.value.trim(); if (!n) { toast('اكتب اسمك أول 😄'); inp.focus(); return; }
-    S = Object.assign({}, DEF, { name: n, hero }); save(); SFX.ok(); hud(); viewMap(true);
-  };
-  show(h('div', { class: 'title' },
-    h('div', { class: 'panel' },
-      h('div', { class: 'logo' }, 'مغامرة جزيرة الرقاقة', h('small', {}, 'CHIP ISLAND • ENGINEERING MANAGEMENT')),
-      h('div', { class: 'center', style: 'margin:14px 0' }, spImg('robot', 6)),
-      h('p', {}, 'تدخل مصنع اتصالات و PCB على جزيرة معزولة، وكل مرحلة = فصل من مادة ', h('b', {}, 'الإدارة الهندسية'), '. اتعلم، تدرّب، اجتاز الاختبار… وصير مدير المصنع!')),
-    has ? h('div', { class: 'panel center' }, h('h3', {}, 'أهلاً برجعتك يا ' + S.name + '! ' + RANKS[rankOf(S.xp)][1]),
-      h('button', { class: 'btn ok', onclick: () => { SFX.ok(); viewMap(); } }, '▶ كمّل المغامرة'),
-      h('button', { class: 'btn ghost sm', onclick: e => { const b = e.currentTarget; if (b.dataset.sure) { S = Object.assign({}, DEF); save(); viewTitle(); } else { b.dataset.sure = 1; b.textContent = '⚠️ اضغط مرة ثانية للتأكيد (يمسح كل التقدم)'; b.className = 'btn warn sm'; } } }, 'ابدأ من جديد')) :
-      h('div', { class: 'panel center' }, h('h3', {}, 'اختار شخصيتك'), h('div', { class: 'heroes' }, hbtn), inp, h('div', {}, h('button', { class: 'btn ok', onclick: start }, '▶ ابدأ المغامرة'))),
-    h('p', { class: 'center muted' }, 'اللعبة تشتغل بدون إنترنت • تقدمك ينحفظ تلقائياً بالمتصفح')));
-}
-
-/* ───────────── الخريطة ───────────── */
-const NODES = [[48, 148], [92, 118], [142, 150], [196, 124], [252, 150], [266, 92], [204, 62], [132, 42]];
-const BLD = [
-  { wall: '#94b0c2', roof: '#566c86', icon: 'gear' }, { wall: '#f4f4f4', roof: '#3b5dc9', icon: 'coin' },
-  { wall: '#ffcd75', roof: '#b13e53', icon: 'clock' }, { wall: '#73eff7', roof: '#29366f', icon: 'org' },
-  { wall: '#a7f070', roof: '#257179', icon: 'chip' }, { wall: '#ef7d57', roof: '#5d275d', icon: 'box' },
-  { wall: '#41a6f6', roof: '#333c57', icon: 'grid' }, { wall: '#566c86', roof: '#b13e53', icon: 'crown' }
-];
-function hash(a, b) { let x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return x - Math.floor(x); }
-function buildMapBG() {
-  const W = 320, H = 200, T = 8, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
-  const land = (tx, ty) => { if (tx < 0 || ty < 0 || tx >= W / T || ty >= H / T) return false; const px = tx * T + 4, py = ty * T + 4;
-    const f = ((px - 160) / 158) ** 2 + ((py - 100) / 92) ** 2, n = Math.sin(tx * 1.7) * .06 + Math.cos(ty * 2.3) * .06 + Math.sin((tx + ty) * .9) * .05; return f + n < 1.02; };
-  for (let ty = 0; ty < H / T; ty++) for (let tx = 0; tx < W / T; tx++) {
-    const L = land(tx, ty);
-    if (!L) { const near = land(tx + 1, ty) || land(tx - 1, ty) || land(tx, ty + 1) || land(tx, ty - 1) || land(tx + 1, ty + 1) || land(tx - 1, ty - 1) || land(tx + 1, ty - 1) || land(tx - 1, ty + 1);
-      x.fillStyle = near ? '#3b5dc9' : ((tx + ty) % 2 ? '#29366f' : '#2a3a78'); x.fillRect(tx * T, ty * T, T, T); if (!near && hash(tx, ty + 5) < .07) waveTiles.push([tx * T, ty * T]); continue; }
-    const edge = !land(tx + 1, ty) || !land(tx - 1, ty) || !land(tx, ty + 1) || !land(tx, ty - 1);
-    x.fillStyle = edge ? '#ffcd75' : '#38b764'; x.fillRect(tx * T, ty * T, T, T);
-    if (!edge) { const r = hash(tx, ty); if (r < .22) { x.fillStyle = '#a7f070'; x.fillRect(tx * T + (r * 30 | 0) % 6, ty * T + (r * 50 | 0) % 6, 2, 2); } else if (r > .93) { x.fillStyle = '#257179'; x.fillRect(tx * T, ty * T + 4, 8, 4); } }
-    else if (hash(ty, tx) < .25) { x.fillStyle = '#ef7d57'; x.fillRect(tx * T + 3, ty * T + 3, 2, 2); }
-  }
-  // مسار
-  x.fillStyle = '#ffcd75';
-  for (let i = 0; i < NODES.length - 1; i++) { const [a, b] = [NODES[i], NODES[i + 1]], d = Math.hypot(b[0] - a[0], b[1] - a[1]), n = d / 6 | 0;
-    for (let k = 1; k < n; k++) { x.fillStyle = '#f4f4f4'; x.fillRect(a[0] + (b[0] - a[0]) * k / n - 1 | 0, a[1] + (b[1] - a[1]) * k / n | 0, 2, 2); } }
-  // أشجار
-  const nearPath = (px, py) => NODES.some(n => Math.hypot(n[0] - px, n[1] - py) < 30) ||
-    NODES.slice(0, -1).some((n, i) => { const m = NODES[i + 1]; for (let k = 0; k <= 8; k++) if (Math.hypot(n[0] + (m[0] - n[0]) * k / 8 - px, n[1] + (m[1] - n[1]) * k / 8 - py) < 14) return true; return false; });
-  for (let ty = 1; ty < H / T - 1; ty++) for (let tx = 1; tx < W / T - 1; tx++) {
-    if (!land(tx, ty) || !land(tx + 1, ty) || !land(tx - 1, ty) || !land(tx, ty + 1) || !land(tx, ty - 1)) continue;
-    if (hash(tx * 3, ty * 7) > .12) continue; const px = tx * T, py = ty * T; if (nearPath(px + 4, py + 4)) continue;
-    x.fillStyle = '#5d275d'; x.fillRect(px + 3, py + 7, 2, 3);
-    x.fillStyle = '#257179'; x.fillRect(px + 1, py + 4, 6, 3); x.fillRect(px + 2, py + 1, 4, 3); x.fillStyle = '#38b764'; x.fillRect(px + 3, py - 2, 2, 3); x.fillRect(px + 2, py + 2, 1, 1);
-  }
-  return c;
-}
-let mapBG = null, waveTiles = [];
-function drawBuilding(c, i, state, t) {
-  const [x, y] = NODES[i], B = BLD[i], boss = i === 7, wh = boss ? 22 : 14, wallW = boss ? 18 : 24;
-  c.fillStyle = 'rgba(26,28,44,.35)'; c.fillRect(x - 15, y + 2, 30, 4);
-  c.fillStyle = '#1a1c2c'; c.fillRect(x - wallW / 2 - 1, y - wh - 1, wallW + 2, wh + 3);
-  c.fillStyle = B.wall; c.fillRect(x - wallW / 2, y - wh, wallW, wh + 1);
-  const rows = 6;
-  for (let k = 0; k < rows; k++) { const wd = boss ? 8 + k * 3 : 6 + k * 4; c.fillStyle = '#1a1c2c'; c.fillRect(x - wd / 2 - 1, y - wh - rows + k, wd + 2, 1); c.fillStyle = B.roof; c.fillRect(x - wd / 2, y - wh - rows + k, wd, 1); }
-  c.fillStyle = '#5d275d'; c.fillRect(x - 2, y - 6, 4, 7); c.fillStyle = '#73eff7';
-  if (!boss) { c.fillRect(x - 9, y - 9, 4, 4); c.fillRect(x + 5, y - 9, 4, 4); } else { c.fillRect(x - 5, y - 17, 3, 4); c.fillRect(x + 2, y - 17, 3, 4); c.fillRect(x - 5, y - 11, 3, 3); c.fillRect(x + 2, y - 11, 3, 3); }
-  const top = y - wh - rows - 10 + Math.round(Math.sin(t / 300 + i) * 1);
-  c.drawImage(sprite(state === 0 ? 'lock' : B.icon), x - 4, top);
-  if (state === 2) c.drawImage(sprite('check'), x + 6, y - wh - 4);
-  if (state === 0) { c.fillStyle = 'rgba(26,28,44,.5)'; c.fillRect(x - wallW / 2 - 1, y - wh - 1, wallW + 2, wh + 3); }
-}
-function levelState(i) { const L = ALL[i]; if (i + 1 > S.unlocked) return 0; return S.stars[L.id] ? 2 : 1; }
-function viewMap(firstTime) {
-  hud(); mapBG = mapBG || buildMapBG();
-  const cv = h('canvas', { class: 'px', width: 320, height: 200 }), c = cv.getContext('2d');
-  const wrap = h('div', { class: 'map-wrap' }, cv);
-  const sheet = h('div', { id: 'sheet' });
-  const hero = { i: Math.min(S.pos || 0, S.unlocked - 1), x: 0, y: 0, q: [], moving: false };
-  [hero.x, hero.y] = NODES[hero.i];
-  const btns = ALL.map((L, i) => {
-    const st = levelState(i), stars = S.stars[L.id] || 0;
-    const b = h('button', { class: 'node ' + (st === 0 ? 'locked' : '') + (i === hero.i ? ' cur' : ''), style: `left:${NODES[i][0] / 320 * 100}%;top:${(NODES[i][1] - 12) / 200 * 100}%`, onclick: () => go(i, b) },
-      h('span', { class: 'lb' }, (i + 1), h('span', { class: 'nm' }, ' · ' + L.name), h('span', { class: 'st' }, st === 0 ? '🔒' : '★'.repeat(stars) + '☆'.repeat(3 - stars))));
-    wrap.append(b); return b;
-  });
-  function go(i, b) {
-    if (levelState(i) === 0) { SFX.bad(); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); toast('🔒 لازم تنجح بالمرحلة اللي قبلها أول'); return; }
-    SFX.click(); sheet.replaceChildren();
-    const q = []; const dir = i > hero.i ? 1 : -1; for (let k = hero.i + dir; k !== i + dir; k += dir) q.push(k);
-    hero.q = q; hero.target = i; hero.moving = q.length > 0;
-    if (!q.length) openSheet(i);
-  }
-  function openSheet(i) {
-    S.pos = i; save(); btns.forEach((b, k) => b.classList.toggle('cur', k === i));
-    const L = ALL[i], stars = S.stars[L.id] || 0;
-    sheet.replaceChildren(h('div', { class: 'panel sheet' },
-      h('div', { class: 'muted' }, L.ch), h('h2', {}, (i + 1) + '. ' + L.name + ' — ' + L.short),
-      h('div', { class: 'stars', style: 'font-size:24px' }, '★'.repeat(stars) + '☆'.repeat(3 - stars)),
-      h('div', { class: 'row' },
-        h('button', { class: 'btn ok', onclick: () => { SFX.ok(); viewIntro(L); } }, L.boss ? '⚔️ ابدأ المعركة' : '▶ ابدأ المرحلة'),
-        !L.boss && h('button', { class: 'btn ghost sm', onclick: () => viewLesson(L, 0) }, '📖 الشرح'),
-        !L.boss && h('button', { class: 'btn ghost sm', onclick: () => viewTrain(L, 0) }, '🎮 التدريب'),
-        h('button', { class: 'btn ghost sm', onclick: () => viewQuiz(L) }, '📝 الاختبار'))));
-    sheet.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-  const miss = S.missed.length;
-  show(
-    h('div', { class: 'panel dark center', style: 'padding:8px' }, h('b', {}, '🏝️ جزيرة الرقاقة'), ' — اضغط على مبنى لتروح له. ', h('span', { class: 'muted' }, 'النجوم: ' + totalStars() + ' / 24')),
-    wrap,
-    h('div', { class: 'lvl-list' }, ALL.map((L, i) => { const st = levelState(i), stars = S.stars[L.id] || 0; return h('button', { class: 'lvl' + (st === 0 ? ' locked' : ''), onclick: () => go(i, btns[i]) }, h('b', {}, (i + 1) + '. ' + L.name), h('span', {}, st === 0 ? '🔒 مقفلة' : '★'.repeat(stars) + '☆'.repeat(3 - stars))); })),
-    sheet,
-    h('div', { class: 'row' },
-      h('button', { class: 'btn sm', onclick: openGlossary }, '📖 قاموس المصطلحات'),
-      miss ? h('button', { class: 'btn warn sm', onclick: () => viewQuiz(null, { practice: true }) }, '🔁 راجع أخطائي (' + miss + ')') : null,
-      S.boss ? h('button', { class: 'btn gold sm', onclick: viewCert }, '🏆 الشهادة') : null));
-  // حلقة الرسم
-  let last = 0, raf, alive = true;
-  mapStop = () => { alive = false; cancelAnimationFrame(raf); };
-  const frame = t => {
-    if (!alive) return; raf = requestAnimationFrame(frame);
-    if (t - last < 90) return; const dt = Math.min(.2, (t - last) / 1000); last = t;
-    if (hero.moving && hero.q.length) {
-      const [tx, ty] = NODES[hero.q[0]], d = Math.hypot(tx - hero.x, ty - hero.y), sp = 110 * dt;
-      if (d <= sp) { hero.x = tx; hero.y = ty; hero.i = hero.q.shift(); SFX.step(); if (!hero.q.length) { hero.moving = false; openSheet(hero.i); } }
-      else { hero.x += (tx - hero.x) / d * sp; hero.y += (ty - hero.y) / d * sp; if ((t / 90 | 0) % 3 === 0) SFX.step(); }
-    }
-    c.drawImage(mapBG, 0, 0);
-    c.fillStyle = '#41a6f6'; waveTiles.forEach((p, k) => { if (((t / 500 + k) % 4) < 1.2) c.fillRect(p[0] + 1, p[1] + 3, 6, 1); });
-    NODES.forEach((_, i) => drawBuilding(c, i, levelState(i), t));
-    const bob = hero.moving ? Math.round(Math.sin(t / 80) * 2) : Math.round(Math.sin(t / 300));
-    c.fillStyle = 'rgba(26,28,44,.4)'; c.fillRect(hero.x - 5 | 0, hero.y + 6 | 0, 11, 2);
-    c.drawImage(sprite('hero', HEROES[S.hero]), hero.x - 6 | 0, hero.y - 14 + bob | 0);
-  };
-  raf = requestAnimationFrame(frame);
-  if (firstTime) { toast('👆 اضغط على المبنى رقم 1 لتبدأ'); }
-}
-
-/* ───────────── تدفق المرحلة ───────────── */
-function crumbs(L, step) {
-  const names = ['الشرح', 'التدريب', 'الاختبار'];
-  return h('div', { class: 'crumbs' }, h('button', { class: 'btn sm ghost', style: 'margin:0', onclick: () => { SFX.click(); viewMap(); } }, '🗺️ الخريطة'),
-    h('b', { style: 'color:var(--yellow)' }, L.name), ...names.map((n, i) => h('span', { class: 'pill ' + (i === step ? 'on' : (i < step ? 'done' : '')) }, n)));
-}
-function npc(html, extra) { return h('div', { class: 'panel' }, h('div', { class: 'npc' }, spImg('robot', 5), h('div', { class: 'bubble' }, h('div', { class: 'lesson-b', html }), extra))); }
-function viewIntro(L) {
-  if (L.boss) { show(crumbs(L, 2), npc(L.intro, h('div', { class: 'center' }, h('button', { class: 'btn warn', onclick: () => viewQuiz(L) }, '⚔️ يلا نقاتل!')))); return; }
-  show(crumbs(L, 0), npc('<b>' + L.ch + ' — ' + L.name + '</b><br>' + L.intro, h('div', { class: 'center' }, h('button', { class: 'btn ok', onclick: () => { SFX.ok(); viewLesson(L, 0); } }, '📖 ابدأ الشرح'))));
-}
-function viewLesson(L, i) {
-  const k = L.lessons[i], last = i === L.lessons.length - 1;
-  const dots = h('div', { class: 'dots' }, L.lessons.map((_, j) => h('i', { class: j < i ? 'done' : (j === i ? 'on' : '') })));
-  show(crumbs(L, 0),
-    h('div', { class: 'panel' }, h('div', { class: 'npc' }, spImg('robot', 4), h('div', { class: 'bubble' },
-      h('div', { class: 'lesson-h' }, h('span', { class: 'ic' }, k.ic), k.t),
-      h('div', { class: 'lesson-b', html: k.b }),
-      k.tip ? h('div', { class: 'tip' }, '🧠 ' + k.tip) : null,
-      k.terms ? h('div', { class: 'terms' }, k.terms.map(t => h('span', { class: 'term' }, h('b', {}, t[0]), ' = ' + t[1]))) : null))),
-    dots, h('div', { class: 'row' },
-      h('button', { class: 'btn ghost', disabled: i === 0, onclick: () => { SFX.click(); viewLesson(L, i - 1); } }, '→ السابق'),
-      last ? h('button', { class: 'btn ok', onclick: () => { if (!S.lessons[L.id]) { S.lessons[L.id] = 1; giveXP(10, 2); toast('+10 XP على إكمال الشرح'); } SFX.ok(); viewTrain(L, 0); } }, '🎮 يلا للتدريب')
-        : h('button', { class: 'btn', onclick: () => { SFX.click(); viewLesson(L, i + 1); } }, 'التالي ←')),
-    h('div', { class: 'center muted' }, 'بطاقة ' + (i + 1) + ' من ' + L.lessons.length));
-}
-function viewTrain(L, i) {
-  const g = L.train[i], box = h('div', { class: 'panel' });
-  const next = () => {
-    if (i + 1 < L.train.length) viewTrain(L, i + 1);
-    else { if (!S.train[L.id]) { S.train[L.id] = 1; giveXP(20, 5); toast('🎮 +20 XP و +5 عملات'); } viewQuiz(L, { pre: true }); }
-  };
-  show(crumbs(L, 1), h('div', { class: 'panel' }, h('div', { class: 'npc' }, spImg('robot', 3), h('div', { class: 'bubble' }, h('h2', {}, g.title), h('div', { class: 'muted' }, g.desc || '')))), box,
-    h('div', { class: 'row' }, h('button', { class: 'btn ghost sm', onclick: () => viewLesson(L, 0) }, '📖 ارجع للشرح'), h('button', { class: 'btn ghost sm', onclick: next }, 'تخطّى التدريب ⏭')));
-  const done = () => { SFX.win(); confetti(); box.append(h('div', { class: 'center' }, h('h3', { class: 'okc' }, '🎉 أحسنت! أكملت التدريب'), h('button', { class: 'btn ok', onclick: next }, i + 1 < L.train.length ? 'التدريب التالي ←' : '📝 يلا للاختبار'))); };
-  if (g.type === 'sim') SIMS[g.sim](box, done); else GAMES[g.type](g, box, done);
-}
-
-/* ───────────── الاختبار ───────────── */
-function viewQuiz(L, opt = {}) {
-  let pool, hearts, practice = !!opt.practice;
-  const all = []; LEVELS.forEach(l => l.quiz.forEach((q, i) => all.push(Object.assign({ id: l.id + '-' + i }, q))));
-  if (practice) { pool = shuffle(all.filter(q => S.missed.includes(q.id))).slice(0, 10); hearts = 99; if (!pool.length) { toast('ما عندك أخطاء للمراجعة 👏'); viewMap(); return; } L = { id: 0, name: 'مراجعة الأخطاء', short: '' }; }
-  else if (L.boss) { pool = shuffle(all).slice(0, L.count); hearts = L.hearts; }
-  else { pool = L.quiz.map((q, i) => Object.assign({ id: L.id + '-' + i }, q)); hearts = 3; }
-  const maxHearts = hearts; let idx = 0, correct = 0, locked = false;
-  const area = h('div');
-  function render() {
-    const q = pool[idx]; locked = false;
-    const order = shuffle(q.o.map((t, i) => ({ t, i })));
-    let hinted = false;
-    const heartsEl = h('div', { class: 'hearts' }, practice ? h('span', { class: 'muted' }, 'وضع المراجعة') : Array.from({ length: maxHearts }, (_, i) => spImg(i < hearts ? 'heart' : 'heartE', 3)));
-    const fb = h('div'), btns = [];
-    const hint = h('button', { class: 'btn sm warn', style: 'margin:0', onclick: () => {
-      if (hinted || locked) return; if (S.coins < 5) { SFX.bad(); toast('تحتاج 5 عملات للتلميح'); return; }
-      S.coins -= 5; save(); hud(); hinted = true; SFX.coin(); hint.disabled = true;
-      shuffle(order.filter(o => o.i !== q.a)).slice(0, 2).forEach(o => btns[order.indexOf(o)].classList.add('gone'));
-    } }, '💡 تلميح (5 عملات)');
-    order.forEach((o, n) => btns.push(h('button', { class: 'opt', onclick: () => pick(o, n) }, h('span', { class: 'k' }, 'ABCD'[n]), h('span', {}, o.t))));
-    function pick(o, n) {
-      if (locked) return; locked = true; hint.disabled = true;
-      const ok = o.i === q.a; btns[n].classList.add(ok ? 'right' : 'wrong');
-      if (ok) { correct++; SFX.ok(); giveXP(hinted ? 5 : 10, 1); if (practice) S.missed = S.missed.filter(x => x !== q.id); }
-      else { SFX.bad(); btns[order.findIndex(x => x.i === q.a)].classList.add('right'); if (!practice) hearts--; if (!S.missed.includes(q.id)) S.missed.push(q.id); }
-      save();
-      const over = !ok && hearts <= 0, endq = idx === pool.length - 1;
-      fb.replaceChildren(h('div', { class: 'fb ' + (ok ? 'good' : 'bad') }, h('b', {}, ok ? '✅ صح عليك! ' : '❌ لا… '), h('span', { html: q.e })),
-        h('div', { class: 'center' }, h('button', { class: 'btn ' + (over ? 'warn' : 'ok'), onclick: () => { SFX.click(); if (over || endq) finish(!over); else { idx++; render(); } } }, over ? 'شوف النتيجة' : (endq ? '🏁 النتيجة' : 'السؤال التالي ←'))));
-      heartsEl.replaceChildren(...(practice ? [h('span', { class: 'muted' }, 'وضع المراجعة')] : Array.from({ length: maxHearts }, (_, i) => spImg(i < hearts ? 'heart' : 'heartE', 3))));
-      fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    area.replaceChildren(h('div', { class: 'panel' },
-      h('div', { class: 'topline' }, heartsEl, h('span', { class: 'muted' }, 'سؤال ' + (idx + 1) + ' / ' + pool.length), hint),
-      h('div', { class: 'bar' }, h('i', { style: 'width:' + (idx / pool.length * 100) + '%' })),
-      h('div', { class: 'qtext' }, q.q), btns, fb));
-  }
-  function finish(passed) {
-    if (practice) { show(h('div', { class: 'panel center' }, h('h2', {}, '🔁 خلّصت المراجعة'), h('p', {}, 'أجبت صح على ' + correct + ' من ' + pool.length), h('button', { class: 'btn ok', onclick: () => viewMap() }, '🗺️ للخريطة'))); return; }
-    if (!passed) { SFX.bad(); show(crumbs(L, 2), h('div', { class: 'panel center' }, spImg('robot', 6), h('h2', { style: 'color:var(--orange)' }, '💔 خلصت القلوب!'), h('p', {}, 'ما تشيل هم، المحاولة طريق التعلم. ارجع للشرح وحاول مرة ثانية.'),
-      h('div', { class: 'row' }, h('button', { class: 'btn warn', onclick: () => viewQuiz(L) }, '🔄 حاول مرة ثانية'), !L.boss && h('button', { class: 'btn ghost', onclick: () => viewLesson(L, 0) }, '📖 راجع الشرح'), h('button', { class: 'btn ghost', onclick: () => viewMap() }, '🗺️ الخريطة')))); return; }
-    const stars = Math.max(1, Math.min(3, hearts)), prev = S.stars[L.id] || 0;
-    let bonus = 0; if (stars > prev) { bonus = prev ? (stars - prev) * 10 : 40 + stars * 10; S.stars[L.id] = stars; }
-    if (L.id < 8) S.unlocked = Math.max(S.unlocked, Math.min(8, L.id + 1));
-    if (L.boss) S.boss = true;
-    save(); giveXP(bonus, stars * 5); SFX.win(); confetti();
-    show(crumbs(L, 2), h('div', { class: 'panel center' }, spImg('robot', 6), h('h2', {}, L.boss ? '👑 هزمت الزعيم!' : '🎉 نجحت بالمرحلة!'), h('div', { class: 'stars' }, '★'.repeat(stars) + '☆'.repeat(3 - stars)),
-      h('p', {}, 'أجبت صح على ' + correct + ' من ' + pool.length + (bonus ? ' • مكافأة +' + bonus + ' XP و +' + stars * 5 + ' عملات' : '')),
-      !L.boss && L.id < 7 ? h('p', { class: 'okc' }, '🔓 انفتحت المرحلة ' + (L.id + 1) + ': ' + ALL[L.id].name) : null,
-      L.id === 7 ? h('p', { class: 'okc' }, '🔓 انفتح برج المدير العام (الزعيم)!') : null,
-      h('div', { class: 'row' }, L.boss ? h('button', { class: 'btn gold', onclick: viewCert }, '🏆 شهادتي') : h('button', { class: 'btn ok', onclick: () => { S.pos = Math.min(L.id, 7); save(); viewMap(); } }, '🗺️ كمّل للخريطة'),
-        h('button', { class: 'btn ghost sm', onclick: () => viewQuiz(L) }, '🔄 أعد للتحسين'))));
-  }
-  show(crumbs(L, 2), area); render();
-}
-
-/* ───────────── الشهادة والقاموس ───────────── */
-function viewCert() {
-  confetti(); SFX.win();
-  show(h('div', { class: 'cert' }, h('div', { style: 'font-size:46px' }, '🏆'), h('h1', {}, 'شهادة مدير المصنع'), h('div', {}, 'تُمنح هذه الشهادة إلى المغامر'), h('div', { class: 'nm' }, S.name),
-    h('div', {}, 'لإتمامه بنجاح مغامرة جزيرة الرقاقة في مادة ', h('b', {}, 'الإدارة الهندسية'), ' بجميع فصولها الأربعة'),
-    h('div', { style: 'margin:12px 0;font-weight:700' }, '⭐ النجوم: ' + totalStars() + ' • XP: ' + S.xp + ' • الرتبة: ' + RANKS[rankOf(S.xp)][1]),
-    h('div', {}, new Date().toLocaleDateString('ar-IQ'))),
-    h('p', { class: 'center muted' }, '📸 خذ لقطة شاشة للشهادة!'), h('div', { class: 'row' }, h('button', { class: 'btn', onclick: () => viewMap() }, '🗺️ للخريطة')));
-}
-function openGlossary() {
-  const list = h('div'), q = h('input', { type: 'text', class: 'search', placeholder: '🔍 ابحث (عربي أو English)' });
-  const draw = () => { const s = q.value.trim().toLowerCase(); list.replaceChildren(...GLOSSARY.filter(g => !s || (g[0] + g[1] + g[2]).toLowerCase().includes(s)).map(g => h('div', { class: 'gl-item' }, h('span', { class: 'e' }, h('i', { class: 'en' }, g[0])), h('span', { class: 'a' }, g[1]), h('div', { class: 'muted' }, g[2])))); };
-  q.addEventListener('input', draw); draw();
-  const ov = h('div', { class: 'overlay' }, h('div', { class: 'box panel' }, h('div', { class: 'topline' }, h('h2', {}, '📖 قاموس المصطلحات'), h('button', { class: 'btn sm warn', style: 'margin:0', onclick: () => ov.remove() }, '✖ إغلاق')), q, list));
-  document.body.append(ov);
-}
-
-/* ───────────── ألعاب التدريب ───────────── */
-const GAMES = {
-  match(g, box, done) {
-    const L = g.pairs.map((p, i) => ({ i, t: p[0] })), R = shuffle(g.pairs.map((p, i) => ({ i, t: p[1] })));
-    let sel = null, hit = 0, miss = 0;
-    const lb = L.map(o => h('button', { class: 'chip', onclick: () => { if (lb[o.i].classList.contains('hit')) return; SFX.click(); lb.forEach(b => b.classList.remove('sel')); lb[o.i].classList.add('sel'); sel = o.i; } }, o.t));
-    const rb = R.map(o => h('button', { class: 'chip', onclick: e => {
-      if (sel === null) { toast('اختار الاسم من اليمين أول 👉'); return; }
-      const b = e.currentTarget;
-      if (o.i === sel) { lb[sel].classList.remove('sel'); lb[sel].classList.add('hit'); b.classList.add('hit'); SFX.ok(); hit++; giveXP(3); sel = null; if (hit === g.pairs.length) { box.append(h('p', { class: 'center muted' }, 'أخطاء: ' + miss)); done(); } }
-      else { miss++; SFX.bad(); b.classList.remove('bad'); void b.offsetWidth; b.classList.add('bad'); }
-    } }, o.t));
-    box.append(h('div', { class: 'cols' }, h('div', {}, lb), h('div', {}, rb)));
-  },
-  sort(g, box, done) {
-    const items = shuffle(g.items); let i = 0, miss = 0;
-    const area = h('div'); box.append(area);
-    function render() {
-      const it = items[i]; let busy = false; const fb = h('div');
-      area.replaceChildren(h('div', { class: 'bar' }, h('i', { style: 'width:' + i / items.length * 100 + '%' })), h('div', { class: 'item-card' }, it.t),
-        h('div', { class: 'bk' }, g.buckets.map((b, k) => h('button', { class: 'chip', onclick: e => {
-          if (busy) return; const el = e.currentTarget;
-          if (k === it.b) { busy = true; el.classList.add('hit'); SFX.ok(); giveXP(2); fb.replaceChildren(h('div', { class: 'fb good' }, '✅ ' + it.e)); setTimeout(() => { i++; if (i < items.length) render(); else done(); }, 1100); }
-          else { miss++; SFX.bad(); el.classList.remove('bad'); void el.offsetWidth; el.classList.add('bad'); fb.replaceChildren(h('div', { class: 'fb bad' }, '❌ مو هذا… جرّب غيره')); }
-        } }, b))), fb);
-    }
-    render();
-  },
-  order(g, box, done) {
-    const correct = g.steps, pool = shuffle(correct.map((t, i) => ({ t, i }))); let n = 0;
-    const chain = h('div', { class: 'chain' }), btns = h('div');
-    pool.forEach(o => { const b = h('button', { class: 'chip', onclick: () => {
-      if (o.i === n) { SFX.ok(); b.remove(); chain.append(h('div', {}, (n + 1) + '. ' + o.t)); n++; if (n === correct.length) done(); }
-      else { SFX.bad(); b.classList.remove('bad'); void b.offsetWidth; b.classList.add('bad'); toast('مو هاي الخطوة ' + (n + 1)); }
-    } }, o.t); btns.append(b); });
-    box.append(chain, btns);
-  }
-};
-
-/* ───────────── أدوات المحاكيات ───────────── */
-function missions(list) {
-  const ul = h('ul', { class: 'missions' }), lis = list.map(t => h('li', {}, t)); ul.append(...lis);
-  const st = list.map(() => false);
-  return { el: ul, set(i) { if (!st[i]) { st[i] = true; lis[i].classList.add('ok'); SFX.coin(); giveXP(4); } return st.every(Boolean); } };
-}
-function slider(label, min, max, step, val, fn, unit = '') {
-  const out = h('b', {}, val + unit), inp = h('input', { type: 'range', min, max, step, value: val });
-  inp.addEventListener('input', () => { out.textContent = inp.value + unit; fn(+inp.value); });
-  return { el: h('div', { class: 'ctrl' }, h('label', {}, h('span', {}, label), out), inp), inp, out };
-}
-function cvs(w, hgt) { const c = h('canvas', { class: 'chart px', width: w, height: hgt }); const x = c.getContext('2d'); x.direction = 'ltr'; return [c, x]; }
-let _fin = false;
-
-const SIMS = {
-  /* ── محاكي نقطة التعادل ── */
-  bep(box, done) {
-    const SALES = 10000; let cap = 50, FC = 1500, VC = 5000, fired = false;
-    const [cv, c] = cvs(320, 190); const ro = {};
-    const mk = missions(['🎯 اوصل لنقطة التعادل: خلّي الربح قريب من الصفر (±100) وبطاقة أكبر من 0', '💰 حقق ربح 3000 دينار أو أكثر بدون ما تتجاوز 90% طاقة', '🏗️ قلّل الكلف الثابتة لين تصير نقطة التعادل أقل من 25% من الطاقة']);
-    const rd = k => { ro[k] = h('b', {}, '-'); return ro[k]; };
-    const readout = h('div', { class: 'readout' }, h('div', {}, 'المبيعات', rd('s')), h('div', {}, 'الكلفة الكلية', rd('c')), h('div', {}, 'الربح', rd('p')), h('div', {}, 'نقطة التعادل (قيمة)', rd('bv')), h('div', {}, 'التعادل (طاقة)', rd('bp')), h('div', {}, 'حد الأمان', rd('ms')));
-    function draw() {
-      const sales = SALES * cap / 100, vc = VC * cap / 100, tc = FC + vc, profit = sales - tc;
-      const bp = SALES > VC ? FC / (SALES - VC) * 100 : Infinity, bv = SALES > VC ? FC / (1 - VC / SALES) : Infinity;
-      const ms = sales > 0 && isFinite(bv) ? (sales - bv) / sales * 100 : 0;
-      c.clearRect(0, 0, 320, 190); c.fillStyle = '#1a1c2c'; c.fillRect(0, 0, 320, 190);
-      const X = v => 32 + v / 100 * 276, Y = v => 168 - v / 12000 * 150;
-      c.strokeStyle = '#333c57'; c.lineWidth = 1; c.fillStyle = '#94b0c2'; c.font = '9px monospace';
-      for (let v = 0; v <= 12000; v += 3000) { c.beginPath(); c.moveTo(32, Y(v)); c.lineTo(308, Y(v)); c.stroke(); c.fillText(v / 1000 + 'k', 4, Y(v) + 3); }
-      for (let v = 0; v <= 100; v += 25) c.fillText(v + '%', X(v) - 8, 182);
-      c.lineWidth = 2; c.setLineDash([4, 3]); c.strokeStyle = '#94b0c2'; c.beginPath(); c.moveTo(X(0), Y(FC)); c.lineTo(X(100), Y(FC)); c.stroke(); c.setLineDash([]);
-      c.strokeStyle = '#a7f070'; c.beginPath(); c.moveTo(X(0), Y(0)); c.lineTo(X(100), Y(SALES)); c.stroke();
-      c.strokeStyle = '#ef7d57'; c.beginPath(); c.moveTo(X(0), Y(FC)); c.lineTo(X(100), Y(FC + VC)); c.stroke();
-      c.fillStyle = '#a7f070'; c.fillText('Revenue', 230, 22); c.fillStyle = '#ef7d57'; c.fillText('Total Cost', 230, 34); c.fillStyle = '#94b0c2'; c.fillText('Fixed Cost', 230, 46);
-      if (isFinite(bp) && bp <= 100) { c.fillStyle = '#ffcd75'; const bx = X(bp), by = Y(FC + VC * bp / 100); c.fillRect(bx - 4, by - 4, 8, 8); c.fillStyle = '#1a1c2c'; c.fillRect(bx - 2, by - 2, 4, 4); c.fillStyle = '#ffcd75'; c.fillText('BEP', bx - 8, by - 8); }
-      c.strokeStyle = '#41a6f6'; c.lineWidth = 1; c.beginPath(); c.moveTo(X(cap), 10); c.lineTo(X(cap), 168); c.stroke();
-      c.fillStyle = '#a7f070'; c.fillRect(X(cap) - 2, Y(sales) - 2, 5, 5); c.fillStyle = '#ef7d57'; c.fillRect(X(cap) - 2, Y(tc) - 2, 5, 5);
-      ro.s.textContent = fmt(sales); ro.c.textContent = fmt(tc); ro.p.textContent = fmt(profit); ro.p.className = profit < 0 ? 'neg' : '';
-      ro.bv.textContent = isFinite(bv) ? fmt(bv) : '∞'; ro.bp.textContent = isFinite(bp) ? bp.toFixed(0) + '%' : '∞'; ro.ms.textContent = sales > 0 && isFinite(bv) ? ms.toFixed(0) + '%' : '—';
-      if (cap > 0 && Math.abs(profit) <= 100) mk.set(0);
-      if (profit >= 3000 && cap <= 90) mk.set(1);
-      if (isFinite(bp) && bp < 25) mk.set(2);
-      if (mk.el.querySelectorAll('li.ok').length === 3 && !fired) { fired = true; done(); }
-    }
-    const s1 = slider('استغلال الطاقة (Capacity)', 0, 100, 1, cap, v => { cap = v; draw(); }, '%');
-    const s2 = slider('الكلف الثابتة (Fixed Costs) — دينار', 500, 4000, 50, FC, v => { FC = v; draw(); });
-    const s3 = slider('الكلف المتغيرة عند 100% طاقة — دينار', 2000, 8000, 100, VC, v => { VC = v; draw(); });
-    box.append(h('p', { class: 'muted' }, 'مصنع PCB: مبيعات 100% طاقة = 10,000 دينار. حرّك المنزلقات وشوف الخطوط. (مثال الكتاب: ثابتة 1500، متغيرة 5000 ← تعادل عند 30%)'), cv, readout, s1.el, s2.el, s3.el, h('h3', {}, '🎯 المهمات'), mk.el);
-    draw();
-  },
-
-  /* ── حاسبة الوقت القياسي ── */
-  stdtime(box, done) {
-    const obs = [42, 40, 44, 41, 43], avg = obs.reduce((a, b) => a + b) / obs.length; let rate = 100, al = 0, fired = false;
-    const mk = missions(['⏱️ اضبط التقييم 100% (عامل اعتيادي) والسماحيات 15% ← الوقت القياسي ≈ 48.3 ثانية', '🐇 خلّي العامل أسرع من الاعتيادي (تقييم 120%) وشوف: الوقت الاعتيادي صار أكبر من الملاحظ']);
-    const out = h('div'), warn = h('div', { class: 'fb bad', style: 'display:none' }, '⚠️ السماحيات عادةً لا تتجاوز 15%!');
-    function draw() {
-      const normal = avg * rate / 100, std = normal * (1 + al / 100);
-      out.replaceChildren(h('div', { class: 'readout' },
-        h('div', {}, 'المُلاحَظ (المعدل)', h('b', {}, avg.toFixed(1) + ' s')), h('div', {}, 'الاعتيادي', h('b', { class: 'y' }, normal.toFixed(1) + ' s')), h('div', {}, 'القياسي', h('b', {}, std.toFixed(1) + ' s'))),
-        h('div', { class: 'formula' }, 'Normal = Observed × Rating = ' + avg.toFixed(1) + ' × ' + (rate / 100).toFixed(2) + ' = ' + normal.toFixed(1) + '\nStandard = Normal × (1 + Allowance) = ' + normal.toFixed(1) + ' × ' + (1 + al / 100).toFixed(2) + ' = ' + std.toFixed(1)));
-      warn.style.display = al > 15 ? 'block' : 'none';
-      if (rate === 100 && Math.abs(std - 48.3) <= .3) mk.set(0); if (rate >= 120 && normal > avg) mk.set(1);
-      if (mk.el.querySelectorAll('li.ok').length === 2 && !fired) { fired = true; done(); }
-    }
-    const s1 = slider('تقييم الأداء (Rating) — إضافة توضيحية', 70, 130, 5, rate, v => { rate = v; draw(); }, '%');
-    const s2 = slider('السماحيات (Allowances)', 0, 25, 1, al, v => { al = v; draw(); }, '%');
-    box.append(h('p', { class: 'muted' }, 'راقبنا عامل يلحم قطعة PCB 5 مرات: ' + obs.join('s ، ') + 's'), out, s1.el, s2.el, warn, h('h3', {}, '🎯 المهمات'), mk.el);
-    draw();
-  },
-
-  /* ── محاكي دورة الإنتاج ── */
-  cycle(box, done) {
-    let n = 4, t = [2, 2, 2], method = 'seq', k = 2, fired = false; const tried = new Set();
-    const mk = missions(['➡️ جرّب الحركة التتابعية (Sequential)', '⚡ جرّب الحركة المتوازية (Parallel) وقارن الزمن', '🧩 جرّب المختلطة (Combined) بدفعات فرعية']);
-    const [cv, c] = cvs(320, 130); const info = h('div'), kc = h('div');
-    const COL = ['#ef7d57', '#ffcd75', '#a7f070', '#73eff7', '#41a6f6', '#b13e53', '#38b764', '#f4f4f4'];
-    function sched(method) {
-      const sizes = []; if (method === 'seq') sizes.push(n); else if (method === 'par') for (let i = 0; i < n; i++) sizes.push(1); else for (let r = n; r > 0; r -= k) sizes.push(Math.min(k, r));
-      const end = sizes.map(() => [0, 0, 0]), bars = []; let pieceBase = 0;
-      sizes.forEach((sz, u) => { for (let s = 0; s < 3; s++) { const st = Math.max(s ? end[u][s - 1] : 0, u ? end[u - 1][s] : 0), d = sz * t[s]; end[u][s] = st + d;
-        for (let j = 0; j < sz; j++) bars.push({ s, p: pieceBase + j, a: st + j * t[s], b: st + (j + 1) * t[s] }); } pieceBase += sz; });
-      return { bars, total: end[sizes.length - 1][2] };
-    }
-    function draw() {
-      const R = sched(method), W = 296, sc = W / Math.max(R.total, 1);
-      c.fillStyle = '#1a1c2c'; c.fillRect(0, 0, 320, 130); c.font = '9px monospace'; c.fillStyle = '#94b0c2';
-      ['Stage 1', 'Stage 2', 'Stage 3'].forEach((l, i) => c.fillText(l, 2, 28 + i * 30));
-      R.bars.forEach(b => { c.fillStyle = COL[b.p % 8]; c.fillRect(48 + b.a * sc * .85, 14 + b.s * 30, Math.max(1, (b.b - b.a) * sc * .85 - 1), 20); });
-      c.fillStyle = '#ffcd75'; c.fillText('0', 48, 124); c.fillText(R.total + ' min', 48 + R.total * sc * .85 - 24, 124);
-      const S1 = sched('seq').total, S2 = sched('par').total, S3 = sched('mix').total;
-      info.replaceChildren(h('div', { class: 'readout' }, h('div', {}, 'تتابعية', h('b', {}, S1 + ' min')), h('div', {}, 'متوازية', h('b', { class: S2 < S1 ? '' : 'neg' }, S2 + ' min')), h('div', {}, 'مختلطة (دفعة ' + k + ')', h('b', { class: 'y' }, S3 + ' min'))),
-        h('div', { class: 'formula' }, 'Sequential = n × Σt = ' + n + ' × ' + (t[0] + t[1] + t[2]) + ' = ' + S1 + '\nParallel = Σt + (n−1) × max(t) = ' + (t[0] + t[1] + t[2]) + ' + ' + (n - 1) + ' × ' + Math.max(...t) + ' = ' + S2));
-      if (tried.has('seq')) mk.set(0); if (tried.has('par')) mk.set(1); if (tried.has('mix')) mk.set(2);
-      if (tried.size === 3 && !fired) { fired = true; done(); }
-    }
-    const tabs = [['seq', '➡️ تتابعية'], ['par', '⚡ متوازية'], ['mix', '🧩 مختلطة']].map(([m, l]) => h('button', { class: 'btn sm' + (m === method ? '' : ' ghost'), onclick: () => { method = m; tried.add(m); SFX.click(); tabs.forEach((b, i) => b.className = 'btn sm' + (['seq', 'par', 'mix'][i] === m ? '' : ' ghost')); kc.style.display = m === 'mix' ? 'block' : 'none'; draw(); } }, l));
-    const sn = slider('عدد القطع (n)', 2, 8, 1, n, v => { n = v; draw(); });
-    const st = [0, 1, 2].map(i => slider('زمن المرحلة ' + (i + 1) + ' (دقيقة)', 1, 5, 1, t[i], v => { t[i] = v; draw(); }));
-    const sk = slider('حجم الدفعة الفرعية', 1, 4, 1, k, v => { k = v; draw(); }); kc.append(sk.el); kc.style.display = 'none';
-    box.append(h('p', { class: 'muted' }, 'كل لون = قطعة. شوف كيف يتغير الزمن الكلي حسب طريقة نقل المواد بين المراحل.'), h('div', { class: 'row' }, tabs), cv, info, sn.el, ...st.map(x => x.el), kc, h('h3', {}, '🎯 المهمات'), mk.el);
-    draw();
-  },
-
-  /* ── محاكي النقل ── */
-  transport(box, done) {
-    const cost = [[9, 3, 2], [4, 6, 2], [9, 2, 1]], sup = [30, 40, 30], dem = [20, 50, 30], OPT = 260;
-    const rn = ['بغداد', 'البصرة', 'أربيل'], cn = ['مخزن 1', 'مخزن 2', 'مخزن 3'];
-    let al = cost.map(r => r.map(() => 0)), fired = false;
-    const mk = missions(['✅ اعمل خطة صحيحة: كل مصنع يشحن كل إنتاجه وكل مخزن ياخذ طلبه بالضبط', '🏆 اوصل لأقل كلفة ممكنة (الحل الأمثل)']);
-    const tbl = h('div'), info = h('div'), hintEl = h('div');
-    const rs = i => al[i].reduce((a, b) => a + b, 0), cs = j => al.reduce((a, r) => a + r[j], 0);
-    const total = () => al.reduce((a, r, i) => a + r.reduce((x, q, j) => x + q * cost[i][j], 0), 0);
-    function nw() { const s = sup.slice(), d = dem.slice(); let i = 0, j = 0; al = cost.map(r => r.map(() => 0)); while (i < 3 && j < 3) { const q = Math.min(s[i], d[j]); al[i][j] = q; s[i] -= q; d[j] -= q; if (s[i] === 0) i++; else j++; } }
-    function lc() { const s = sup.slice(), d = dem.slice(); al = cost.map(r => r.map(() => 0)); const cells = []; cost.forEach((r, i) => r.forEach((v, j) => cells.push([v, i, j]))); cells.sort((a, b) => a[0] - b[0]); cells.forEach(([v, i, j]) => { const q = Math.min(s[i], d[j]); if (q > 0) { al[i][j] = q; s[i] -= q; d[j] -= q; } }); }
-    function draw(msg) {
-      const feas = sup.every((v, i) => rs(i) === v) && dem.every((v, j) => cs(j) === v), tc = total();
-      const t = h('table', { class: 'grid' }, h('tr', {}, h('th', {}), ...cn.map((n, j) => h('th', {}, n, h('br'), h('span', { class: cs(j) === dem[j] ? 'okc' : (cs(j) > dem[j] ? 'badc' : '') }, cs(j) + ' / ' + dem[j]))), h('th', {}, 'العرض')),
-        ...rn.map((n, i) => h('tr', {}, h('th', {}, n), ...cost[i].map((cv, j) => h('td', {}, h('span', { class: 'c' }, '💲' + cv), h('span', { class: 'q' }, al[i][j]),
-          h('div', { class: 'pm' }, h('button', { onclick: () => { if (al[i][j] > 0) { al[i][j] -= 10; SFX.click(); draw(); } } }, '−'), h('button', { onclick: () => { al[i][j] += 10; SFX.click(); draw(); } }, '+')))),
-          h('th', {}, h('span', { class: rs(i) === sup[i] ? 'okc' : (rs(i) > sup[i] ? 'badc' : '') }, rs(i) + ' / ' + sup[i])))));
-      tbl.replaceChildren(t);
-      info.replaceChildren(h('div', { class: 'readout' }, h('div', {}, 'الكلفة الكلية T.T.C.', h('b', { class: feas ? 'y' : 'neg' }, fmt(tc))), h('div', {}, 'الحالة', h('b', { class: feas ? '' : 'neg' }, feas ? 'خطة صحيحة ✔' : 'غير مكتملة'))), msg ? h('div', { class: 'fb' }, msg) : '');
-      let all = false;
-      if (feas) all = mk.set(0);
-      if (feas && tc === OPT) { mk.set(1); if (!fired) { fired = true; done(); } }
-      else if (feas && tc > OPT) info.append(h('div', { class: 'fb bad' }, 'الخطة ممكنة بس مو الأرخص! الكلفة ' + fmt(tc) + ' ويمكن تقل. جرّب تنقل الكميات للطرق الأرخص.'));
-    }
-    const auto = (name, fn) => h('button', { class: 'btn sm ghost', onclick: () => { fn(); SFX.click(); draw('طريقة ' + name + ' أعطت كلفة ' + fmt(total()) + (total() === OPT ? ' — وهي الأمثل!' : ' — لكن الأمثل ' + fmt(OPT) + '، يعني تحتاج تحسين (Stepping-Stone).')); } }, name);
-    box.append(h('p', { class: 'muted' }, 'المصانع: بغداد، البصرة، أربيل (صفوف) والمخازن أعمدة. كل ضغطة + أو − = 10 وحدات. الرقم البرتقالي 💲 = كلفة نقل الوحدة. لازم مجموع الصف = العرض ومجموع العمود = الطلب.'),
-      tbl, info, h('div', { class: 'row' }, auto('Northwest Corner', nw), auto('Least Cost', lc), h('button', { class: 'btn sm warn', onclick: () => { al = cost.map(r => r.map(() => 0)); draw(); } }, '🔄 صفّر')),
-      h('div', { class: 'row' }, h('button', { class: 'btn sm gold', onclick: () => { hintEl.replaceChildren(h('div', { class: 'fb' }, '💡 تلميح: بغداد ← مخزن 2 (20) + مخزن 3 (10) • البصرة ← مخزن 1 (20) + مخزن 3 (20) • أربيل ← مخزن 2 (30)')); } }, '💡 تلميح الحل الأمثل')), hintEl,
-      h('h3', {}, '🎯 المهمات'), mk.el);
-    draw();
-  },
-
-  /* ── محاكي التخصيص ── */
-  assign(box, done) {
-    const M = [[10, 11, 4, 2, 8], [7, 11, 10, 14, 12], [5, 6, 9, 12, 14], [13, 15, 11, 10, 7]], OPT = 22; const pick = [-1, -1, -1, -1]; let fired = false;
-    const jobs = ['J1 لحام', 'J2 فحص', 'J3 تجميع', 'J4 تغليف'];
-    const mk = missions(['✅ خصّص كل مهمة لمكينة مختلفة (4 مهام، مكينة وحدة تبقى فاضية)', '🏆 اوصل لأقل كلفة كلية = 22']);
-    const tbl = h('div'), info = h('div'), steps = h('div');
-    function draw() {
-      const used = pick.filter(x => x >= 0), full = used.length === 4, tc = pick.reduce((a, m, i) => a + (m >= 0 ? M[i][m] : 0), 0);
-      tbl.replaceChildren(h('table', { class: 'grid' }, h('tr', {}, h('th', {}), ...[1, 2, 3, 4, 5].map(m => h('th', {}, 'M' + m))),
-        ...M.map((r, i) => h('tr', {}, h('th', {}, jobs[i]), ...r.map((v, m) => h('td', { class: 'can' + (pick[i] === m ? ' pick' : ''), onclick: () => {
-          if (pick[i] === m) pick[i] = -1; else { const o = pick.indexOf(m); if (o >= 0) { SFX.bad(); toast('المكينة M' + (m + 1) + ' محجوزة للمهمة J' + (o + 1)); return; } pick[i] = m; }
-          SFX.click(); draw(); } }, h('span', { class: 'q' }, v)))))));
-      info.replaceChildren(h('div', { class: 'readout' }, h('div', {}, 'الكلفة الحالية', h('b', { class: 'y' }, tc)), h('div', {}, 'الهدف (الأمثل)', h('b', {}, '؟')), h('div', {}, 'مكينة فاضية', h('b', {}, full ? 'M' + [0, 1, 2, 3, 4].filter(m => !used.includes(m)).map(m => m + 1).join('') : '—'))));
-      if (full) { mk.set(0); if (tc === OPT) { mk.set(1); if (!fired) { fired = true; done(); } } else info.append(h('div', { class: 'fb bad' }, 'الكلفة ' + tc + ' — فيه حل أرخص! جرّب تبدّل.')); }
-    }
-    const mats = [
-      ['بعد إضافة المهمة الوهمية J5 (كلفتها صفر)', [[10, 11, 4, 2, 8], [7, 11, 10, 14, 12], [5, 6, 9, 12, 14], [13, 15, 11, 10, 7], [0, 0, 0, 0, 0]]],
-      ['بعد طرح أصغر قيمة بكل صف (الأعمدة ما تتغير)', [[8, 9, 2, 0, 6], [0, 4, 3, 7, 5], [0, 1, 4, 7, 9], [6, 8, 4, 3, 0], [0, 0, 0, 0, 0]]],
-      ['خطوط التغطية 4 < 5 ← نطرح 1 من غير المغطى ونضيفه للتقاطعات', [[8, 8, 1, 0, 6], [0, 3, 2, 7, 5], [0, 0, 3, 7, 9], [6, 7, 3, 3, 0], [1, 0, 0, 1, 1]]]
-    ];
-    const tog = h('button', { class: 'btn sm ghost', onclick: () => { if (steps.childNodes.length) { steps.replaceChildren(); return; } SFX.click();
-      steps.replaceChildren(h('div', { class: 'panel dark' }, ...mats.map(([t, m]) => h('div', { class: 'mat' }, h('div', { class: 'muted' }, t), h('table', {}, ...m.map((r, i) => h('tr', {}, h('th', {}, i < 4 ? 'J' + (i + 1) : 'J5'), ...r.map(v => h('td', { class: v === 0 ? 'z' : '' }, v))))))),
-        h('p', { class: 'okc' }, 'عدد خطوط التغطية صار 5 = n ← الحل أمثل:'), h('div', { class: 'formula' }, 'J1→M4 = 2\nJ2→M1 = 7\nJ3→M2 = 6\nJ4→M5 = 7\nTotal = 22'), h('p', { class: 'okc' }, 'والمكينة M3 تروح للمهمة الوهمية (بدون شغل).'))); } }, '📘 شوف خطوات الطريقة المجرية');
-    box.append(h('p', { class: 'muted' }, 'مثال 2 من الكتاب: 4 مهام و5 مكائن (جدول الكلفة). اضغط على خلية لتعطي المهمة لمكينة. كل مكينة لمهمة وحدة فقط.'), tbl, info, h('div', { class: 'row' }, tog), steps, h('h3', {}, '🎯 المهمات'), mk.el);
-    draw();
-  }
-};
-
-
-load(); window.__G={S:()=>S,LEVELS,ALL,viewMap,viewLesson,viewTrain,viewQuiz,viewTitle,SIMS,GAMES};
-if(S.name&&(S.xp>0||S.unlocked>1)) hud();
-viewTitle();
-
-})();
-</script></body></html>
+</script>
+</body>
+</html>
